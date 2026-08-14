@@ -417,7 +417,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
     <div className="max-w-5xl mx-auto px-4 py-8 animate-fadeIn pb-24">
       
       {/* Top Header Card */}
-      <div className="glass-panel p-6 rounded-2xl border border-sky-400 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 text-white shadow-xl shadow-sky-500/15">
+      <div className="p-6 sm:p-8 rounded-2xl border border-sky-400 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 text-white shadow-xl shadow-sky-500/20">
         <div>
           <div className="flex items-center space-x-3">
             <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-md bg-white/20 text-white border border-white/30 backdrop-blur-sm">
@@ -425,7 +425,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
             </span>
             <span className="text-xs text-sky-100 font-medium">Doc Ref: RGI/3HR/3F6R3 001</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-white mt-2">
+          <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-white mt-2 drop-shadow-sm">
             Online Employment Application Form
           </h1>
           <p className="text-xs text-sky-100 mt-1 font-medium">
@@ -437,13 +437,13 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         <div className="flex items-center space-x-3">
           <button
             onClick={saveDraft}
-            className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold border border-white/30 backdrop-blur-sm transition-colors shadow-sm"
+            className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 backdrop-blur-sm transition-colors shadow-sm"
           >
             <Save className="w-4 h-4 text-amber-300" />
             <span>Save Draft</span>
           </button>
           {lastSavedTime && (
-            <span className="text-[11px] text-sky-100 italic">
+            <span className="text-[11px] text-sky-100 italic font-medium">
               Saved at {lastSavedTime}
             </span>
           )}
@@ -463,19 +463,19 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                   if (step.num < currentStep) setCurrentStep(step.num);
                 }}
                 className={`flex flex-col items-center cursor-pointer transition-all ${
-                  isCurrent ? 'text-sky-700 font-bold' : isCompleted ? 'text-emerald-700 font-semibold' : 'text-slate-400'
+                  isCurrent ? 'text-sky-800 font-extrabold' : isCompleted ? 'text-emerald-700 font-bold' : 'text-slate-600 font-medium'
                 }`}
               >
                 <div className={`w-9 h-9 rounded-full font-bold text-xs flex items-center justify-center border transition-all mb-1.5 ${
                   isCurrent 
-                    ? 'bg-sky-600 text-white border-sky-500 ring-4 ring-sky-500/20 shadow-md shadow-sky-500/20' 
+                    ? 'bg-sky-600 text-white border-sky-600 ring-4 ring-sky-500/20 shadow-md shadow-sky-500/25' 
                     : isCompleted 
                     ? 'bg-emerald-100 text-emerald-700 border-emerald-300' 
-                    : 'bg-sky-50 border-sky-200 text-sky-700'
+                    : 'bg-slate-100 border-slate-300 text-slate-700 font-bold'
                 }`}>
                   {isCompleted ? <Check className="w-5 h-5" /> : step.num}
                 </div>
-                <span className="text-[11px] font-semibold tracking-tight text-center truncate max-w-[80px]">
+                <span className="text-[11px] tracking-tight text-center truncate max-w-[80px]">
                   {step.label}
                 </span>
               </div>

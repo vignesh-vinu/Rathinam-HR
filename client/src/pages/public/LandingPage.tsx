@@ -152,24 +152,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectOr
 
       {/* TRACKER CALLOUT CARD */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-sky-200 bg-gradient-to-r from-sky-900 via-slate-900 to-sky-950 flex flex-col md:flex-row items-center justify-between gap-6 text-white shadow-xl">
+        <div className="rounded-3xl p-6 sm:p-10 border border-sky-400/30 bg-gradient-to-r from-sky-700 via-sky-800 to-blue-900 flex flex-col md:flex-row items-center justify-between gap-6 text-white shadow-xl">
           <div className="space-y-2 text-center md:text-left">
-            <span className="px-3 py-1 text-[11px] font-bold uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-400/30 rounded-md">
+            <span className="px-3 py-1 text-[11px] font-bold uppercase tracking-wider bg-white/20 text-white border border-white/30 rounded-md backdrop-blur-sm">
               Real-Time Status Tracker
             </span>
             <h3 className="text-xl sm:text-2xl font-heading font-extrabold text-white">
               Already Submitted Your Application?
             </h3>
-            <p className="text-xs sm:text-sm text-slate-300">
+            <p className="text-xs sm:text-sm text-sky-100 font-medium">
               Track your live recruitment progress, interview schedule, and selection status with your Application ID.
             </p>
           </div>
 
           <button
             onClick={() => onNavigate('track')}
-            className="px-6 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-extrabold text-xs shadow-lg transition-all flex items-center space-x-2 whitespace-nowrap hover:scale-105"
+            className="px-6 py-3.5 rounded-xl bg-white hover:bg-sky-50 text-sky-900 font-extrabold text-xs shadow-lg transition-all flex items-center space-x-2 whitespace-nowrap hover:scale-105"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-4 h-4 text-sky-600" />
             <span>Open Candidate Tracker</span>
           </button>
         </div>
