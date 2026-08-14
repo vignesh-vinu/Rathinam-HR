@@ -113,7 +113,78 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
   const handlePrintResume = () => {
     setActiveTab('resume');
     setTimeout(() => {
-      window.print();
+      const printElement = document.querySelector('.resume-container');
+      if (!printElement) {
+        window.print();
+        return;
+      }
+
+      // Create isolated print iframe to exclude website Navbar, Footer, and Header Banners
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      document.body.appendChild(iframe);
+
+      const frameDoc = iframe.contentWindow?.document;
+      if (frameDoc) {
+        frameDoc.open();
+        frameDoc.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Candidate Personal Data Sheet - ${app?.applicationId || ''}</title>
+              <script src="https://cdn.tailwindcss.com"></script>
+              <style>
+                @page {
+                  size: A4;
+                  margin: 8mm;
+                }
+                body {
+                  background: #ffffff !important;
+                  color: #000000 !important;
+                  font-family: system-ui, -apple-system, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                }
+                .print-page {
+                  page-break-after: always;
+                  break-after: page;
+                }
+                .no-print {
+                  display: none !important;
+                }
+                .resume-container {
+                  box-shadow: none !important;
+                  padding: 0 !important;
+                  max-width: 100% !important;
+                }
+              </style>
+            </head>
+            <body>
+              <div className="p-4">
+                ${printElement.innerHTML}
+              </div>
+            </body>
+          </html>
+        `);
+        frameDoc.close();
+
+        setTimeout(() => {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+          setTimeout(() => {
+            if (document.body.contains(iframe)) {
+              document.body.removeChild(iframe);
+            }
+          }, 1500);
+        }, 600);
+      } else {
+        window.print();
+      }
     }, 300);
   };
 
