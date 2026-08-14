@@ -1,0 +1,27 @@
+{
+  "name": "rathinam-hr",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rathinam HR – Smart Recruitment & Applicant Management System",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm start",
+    "server:dev": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "build": "cd client && node --max-old-space-size=4096 node_modules/vite/bin/vite.js build",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "@supabase/supabase-js": "^2.45.1",
+    "uuid": "^9.0.1",
+    "dotenv": "^16.4.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
