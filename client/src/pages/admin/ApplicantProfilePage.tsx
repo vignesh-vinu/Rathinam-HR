@@ -172,15 +172,15 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
             }`}
           >
             <Eye className="w-4 h-4 inline mr-1" />
-            <span>View Resume</span>
+            <span>View Data Sheet PDF</span>
           </button>
 
           <button
             onClick={handlePrintResume}
-            className="flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700"
+            className="flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs shadow-lg transition-all"
           >
-            <Printer className="w-4 h-4 text-amber-400" />
-            <span>Print Resume PDF</span>
+            <Printer className="w-4 h-4 text-slate-950" />
+            <span>Print Data Sheet PDF (2-Page)</span>
           </button>
 
           <button
@@ -382,90 +382,373 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
         </div>
       )}
 
-      {/* TAB 2: DYNAMIC EXECUTIVE RESUME VIEW */}
+      {/* TAB 2: OFFICIAL RATHINAM Candidate Personal Data Sheet PDF VIEW */}
       {activeTab === 'resume' && (
-        <div className="resume-container p-8 rounded-3xl bg-white text-slate-900 shadow-2xl space-y-8 font-sans">
+        <div className="resume-container bg-white text-black p-6 sm:p-10 font-sans shadow-2xl rounded-2xl max-w-4xl mx-auto space-y-8">
           
-          {/* Executive Resume Header */}
-          <div className="flex items-center justify-between border-b-2 border-slate-900 pb-6">
-            <div>
-              <h1 className="text-3xl font-heading font-extrabold uppercase tracking-tight text-slate-900">
-                {p.firstName} {p.middleName} {p.lastName}
-              </h1>
-              <p className="text-base font-bold text-amber-700 mt-1">
-                {app.positionApplied}
-              </p>
-              <p className="text-xs text-slate-600 mt-2">
-                ✉ {c.email} | 📞 {c.mobile} | 📍 {c.city}, {c.state} - {c.pincode}
-              </p>
-            </div>
+          {/* ==================== PAGE 1 ==================== */}
+          <div className="space-y-4 print-page">
             
-            <div className="text-right">
-              <div className="w-20 h-20 rounded-xl overflow-hidden border border-slate-300 ml-auto mb-2">
-                <img src={p.photoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200'} alt="Photo" className="w-full h-full object-cover" />
+            {/* Header: Rathinam Logo + Title + Passport Photo Box */}
+            <div className="flex items-start justify-between border-b-2 border-black pb-3">
+              <div className="flex-1 text-center pl-28">
+                {/* Rathinam Colored Logo */}
+                <div className="inline-flex flex-col items-center">
+                  <div className="flex items-center space-x-1 mb-1">
+                    <div className="w-4 h-4 rounded-full border-2 border-amber-500 flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    </div>
+                    <div className="w-5 h-5 rounded-full border-2 border-emerald-500 -mt-2 flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                    </div>
+                    <div className="w-4 h-4 rounded-full border-2 border-sky-500 flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+                    </div>
+                  </div>
+                  <span className="font-extrabold text-lg tracking-widest text-black uppercase font-heading">
+                    RATHINAM
+                  </span>
+                </div>
+                <h1 className="text-lg font-bold text-black underline uppercase mt-1">
+                  Candidate Personal Data Sheet
+                </h1>
               </div>
-              <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-300">
-                ID: {app.applicationId} ({app.organizationId})
-              </span>
+
+              {/* Passport Size Photo Box on Top Right */}
+              <div className="w-[105px] h-[130px] border-2 border-black p-0.5 flex flex-col items-center justify-center bg-slate-50 text-center flex-shrink-0 ml-4">
+                {p.photoUrl ? (
+                  <img src={p.photoUrl} alt="Candidate Photo" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="text-[10px] font-bold text-slate-500 uppercase leading-tight px-1">
+                    Affix Candidate Passport Size Photo
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Date / Time / Source Box */}
+            <div className="border border-black grid grid-cols-3 text-xs divide-x divide-black font-semibold">
+              <div className="p-2">Date : <span className="font-normal">{app.submissionDate || new Date(app.submittedAt).toLocaleDateString()}</span></div>
+              <div className="p-2">Time : <span className="font-normal">{app.submissionTime || new Date(app.submittedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></div>
+              <div className="p-2">Source : <span className="font-normal">{app.source || 'Career Portal'}</span></div>
+            </div>
+
+            {/* Personal Details Form Lines */}
+            <div className="space-y-2.5 text-xs font-semibold leading-relaxed pt-1">
+              <div className="border-b border-black/30 pb-1">
+                <span>Position Applied for : </span>
+                <span className="font-normal underline underline-offset-4">{app.positionApplied}</span>
+              </div>
+
+              <div className="border-b border-black/30 pb-1 flex items-baseline justify-between flex-wrap gap-2">
+                <span>Name (In Block Letters) : <span className="font-bold uppercase text-sm">{p.firstName || ''}</span> <span className="text-[10px] font-normal text-slate-500">(First Name)</span></span>
+                <span><span className="font-bold uppercase text-sm">{p.middleName || '-'}</span> <span className="text-[10px] font-normal text-slate-500">(Middle Name)</span></span>
+                <span><span className="font-bold uppercase text-sm">{p.lastName || ''}</span> <span className="text-[10px] font-normal text-slate-500">(Last Name)</span></span>
+              </div>
+
+              <div className="border-b border-black/30 pb-1">
+                <span>Contact Address : </span>
+                <span className="font-normal">{c.address}, {c.city}, {c.state}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 border-b border-black/30 pb-1">
+                <div>Pin code : <span className="font-normal">{c.pincode}</span></div>
+                <div>e – Mail id : <span className="font-normal">{c.email}</span></div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 border-b border-black/30 pb-1">
+                <div>Phone : <span className="font-normal">{c.phone || 'N/A'}</span></div>
+                <div>Mobile : <span className="font-normal">{c.mobile}</span></div>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2 border-b border-black/30 pb-1">
+                <div>Date of Birth: <span className="font-normal">{p.dob}</span></div>
+                <div>Age : <span className="font-normal">{p.age} Yrs</span></div>
+                <div>Gender : <span className="font-normal">{p.gender}</span></div>
+                <div>Marital Status : <span className="font-normal">{p.maritalStatus}</span></div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 border-b border-black/30 pb-1">
+                <div>Current Gross (Per Annum) : <span className="font-normal">₹{f.currentSalary || 'N/A'}</span></div>
+                <div>Expected Gross (Per Annum) : <span className="font-normal">₹{f.expectedSalary || 'N/A'}</span></div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 border-b border-black/30 pb-1">
+                <div>Current Company Notice Period : <span className="font-normal">{f.noticePeriod || 'Immediate'}</span></div>
+                <div>Total years of Experience : <span className="font-normal">{f.totalExperienceYears || '0'} Years</span></div>
+              </div>
+            </div>
+
+            {/* Educational Qualifications Table */}
+            <div className="pt-2 space-y-1">
+              <h3 className="text-xs font-bold text-black uppercase">Educational Qualifications:</h3>
+              <table className="w-full text-center text-[11px] border-collapse border border-black">
+                <thead>
+                  <tr className="border-b border-black bg-slate-100 font-bold">
+                    <th className="border-r border-black p-1.5">Degree (from latest)</th>
+                    <th className="border-r border-black p-1.5">Division</th>
+                    <th className="border-r border-black p-1.5">College</th>
+                    <th className="border-r border-black p-1.5">Name of Board/University</th>
+                    <th className="border-r border-black p-1.5">Credit Points / % of Marks</th>
+                    <th className="border-r border-black p-1.5">Major Subjects</th>
+                    <th className="p-1.5">Year of Passing</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-black">
+                  {(app.educationDetails || []).map((edu, idx) => (
+                    <tr key={idx}>
+                      <td className="border-r border-black p-1.5 font-bold">{edu.degree}</td>
+                      <td className="border-r border-black p-1.5">{edu.division}</td>
+                      <td className="border-r border-black p-1.5">{edu.institution}</td>
+                      <td className="border-r border-black p-1.5">{edu.boardUniversity}</td>
+                      <td className="border-r border-black p-1.5 font-semibold">{edu.percentage}</td>
+                      <td className="border-r border-black p-1.5">{edu.majorSubjects}</td>
+                      <td className="p-1.5 font-mono">{edu.yearOfPassing}</td>
+                    </tr>
+                  ))}
+                  {Array.from({ length: Math.max(0, 3 - (app.educationDetails?.length || 0)) }).map((_, i) => (
+                    <tr key={`empty-edu-${i}`}>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="p-2">&nbsp;</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Work Experience Table */}
+            <div className="pt-2 space-y-1">
+              <h3 className="text-xs font-bold text-black uppercase">Work Experience (Starting from present Organization)</h3>
+              <table className="w-full text-center text-[11px] border-collapse border border-black">
+                <thead>
+                  <tr className="border-b border-black bg-slate-100 font-bold">
+                    <th className="border-r border-black p-1" rowSpan={2}>Name of Organization</th>
+                    <th className="border-r border-black p-1" rowSpan={2}>Designation</th>
+                    <th className="border-r border-black p-1" colSpan={2}>Period</th>
+                    <th className="border-r border-black p-1" rowSpan={2}>Gross Salary PM</th>
+                    <th className="border-r border-black p-1" rowSpan={2}>Annual CTC</th>
+                    <th className="p-1" rowSpan={2}>Reason for Leaving</th>
+                  </tr>
+                  <tr className="border-b border-black bg-slate-100 font-bold">
+                    <th className="border-r border-black p-1 text-[10px]">From</th>
+                    <th className="border-r border-black p-1 text-[10px]">To</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-black">
+                  {(app.experienceDetails || []).map((exp, idx) => (
+                    <tr key={idx}>
+                      <td className="border-r border-black p-1.5 font-bold">{exp.organization}</td>
+                      <td className="border-r border-black p-1.5">{exp.designation}</td>
+                      <td className="border-r border-black p-1 text-[10px] font-mono">{exp.periodFrom}</td>
+                      <td className="border-r border-black p-1 text-[10px] font-mono">{exp.periodTo}</td>
+                      <td className="border-r border-black p-1.5 font-mono">{exp.ctcPerMonth ? `₹${exp.ctcPerMonth}` : '-'}</td>
+                      <td className="border-r border-black p-1.5 font-mono">₹{exp.grossAnnualSalary}</td>
+                      <td className="p-1.5">{exp.reasonForLeaving}</td>
+                    </tr>
+                  ))}
+                  {Array.from({ length: Math.max(0, 3 - (app.experienceDetails?.length || 0)) }).map((_, i) => (
+                    <tr key={`empty-exp-${i}`}>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="p-2">&nbsp;</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="border-b border-black/30 pb-1 text-xs font-semibold pt-1">
+              Career Break If any: <span className="font-normal">{app.experienceDetails?.[0]?.careerBreak || 'None'}</span>
+            </div>
+
+            {/* Page 1 Footer */}
+            <div className="pt-3 text-[10px] text-slate-600 font-semibold flex justify-between border-t border-black/20">
+              <span>Doc Ref: RGI/HR/FR 001 Rev:02 - Date of Issue: 01-06-2025</span>
+              <span>Page 1 of 2</span>
             </div>
           </div>
 
-          {/* Academic Credentials */}
-          <div>
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 border-b border-slate-300 pb-1 mb-3">
-              Educational Qualifications
-            </h2>
-            <div className="space-y-3 text-xs">
-              {(app.educationDetails || []).map((edu, idx) => (
-                <div key={idx} className="flex justify-between">
-                  <div>
-                    <p className="font-bold text-slate-900">{edu.degree} – <span className="font-normal text-slate-700">{edu.institution} ({edu.boardUniversity})</span></p>
-                    <p className="text-slate-600 text-[11px]">Specialization: {edu.majorSubjects} | Division: {edu.division}</p>
+          {/* ==================== PAGE BREAK ==================== */}
+          <div className="page-break my-8 border-b-2 border-dashed border-slate-300 no-print" />
+
+          {/* ==================== PAGE 2 ==================== */}
+          <div className="space-y-4 print-page pt-4">
+            
+            {/* Header: Rathinam Logo Page 2 */}
+            <div className="text-center border-b-2 border-black pb-3">
+              <div className="inline-flex flex-col items-center">
+                <div className="flex items-center space-x-1 mb-1">
+                  <div className="w-4 h-4 rounded-full border-2 border-amber-500 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                   </div>
-                  <div className="text-right">
-                    <span className="font-bold text-slate-900">{edu.percentage}</span>
-                    <p className="text-slate-500 text-[11px]">{edu.yearOfPassing}</p>
+                  <div className="w-5 h-5 rounded-full border-2 border-emerald-500 -mt-2 flex items-center justify-center">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                  </div>
+                  <div className="w-4 h-4 rounded-full border-2 border-sky-500 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-sky-500" />
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Work Experience */}
-          <div>
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 border-b border-slate-300 pb-1 mb-3">
-              Professional Work Experience
-            </h2>
-            <div className="space-y-4 text-xs">
-              {(app.experienceDetails || []).map((exp, idx) => (
-                <div key={idx} className="space-y-1">
-                  <div className="flex justify-between font-bold text-slate-900">
-                    <span>{exp.designation} at {exp.organization}</span>
-                    <span>{exp.periodFrom} – {exp.periodTo}</span>
-                  </div>
-                  <p className="text-slate-700 text-[11px]">Gross Annual Salary: ₹{exp.grossAnnualSalary} | Reason for leaving: {exp.reasonForLeaving}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Certifications & Languages */}
-          <div className="grid grid-cols-2 gap-6 text-xs">
-            <div>
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-300 pb-1 mb-2">
-                Certifications
-              </h2>
-              <p className="text-slate-700">{app.certifications || 'None listed'}</p>
+                <span className="font-extrabold text-base tracking-widest text-black uppercase font-heading">
+                  RATHINAM
+                </span>
+              </div>
             </div>
 
-            <div>
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-300 pb-1 mb-2">
-                Languages Known
-              </h2>
-              <p className="text-slate-700">
-                {(app.languagesKnown || []).map(l => l.language).join(', ')}
+            {/* Certifications */}
+            <div className="border-b border-black/30 pb-1 text-xs font-semibold">
+              Certifications if Any? (E.g.: Oracle, Java, Network etc. ) : <span className="font-normal">{app.certifications || 'None listed'}</span>
+            </div>
+
+            {/* Languages Known Grid */}
+            <div className="space-y-1">
+              <h3 className="text-xs font-bold text-black uppercase">Language Known:</h3>
+              <table className="w-full text-center text-[11px] border-collapse border border-black">
+                <thead>
+                  <tr className="border-b border-black bg-slate-100 font-bold">
+                    <th className="border-r border-black p-1">S. No.</th>
+                    <th className="border-r border-black p-1">Language</th>
+                    <th className="border-r border-black p-1 text-[10px]">R &nbsp; W &nbsp; S &nbsp; U</th>
+                    <th className="border-r border-black p-1">S. No.</th>
+                    <th className="border-r border-black p-1">Language</th>
+                    <th className="p-1 text-[10px]">R &nbsp; W &nbsp; S &nbsp; U</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-black">
+                  {(app.languagesKnown || []).map((lang, idx) => (
+                    <tr key={idx}>
+                      <td className="border-r border-black p-1">{idx + 1}</td>
+                      <td className="border-r border-black p-1 font-semibold">{lang.language}</td>
+                      <td className="border-r border-black p-1 font-mono text-[10px]">
+                        {lang.read ? '☑' : '☐'} &nbsp; {lang.write ? '☑' : '☐'} &nbsp; {lang.speak ? '☑' : '☐'} &nbsp; {lang.understand ? '☑' : '☐'}
+                      </td>
+                      <td className="border-r border-black p-1">-</td>
+                      <td className="border-r border-black p-1">-</td>
+                      <td className="p-1 font-mono text-[10px]">-</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Family Details Table */}
+            <div className="space-y-1">
+              <h3 className="text-xs font-bold text-black uppercase">*Family Details:</h3>
+              <table className="w-full text-center text-[11px] border-collapse border border-black">
+                <thead>
+                  <tr className="border-b border-black bg-slate-100 font-bold">
+                    <th className="border-r border-black p-1">S. No.</th>
+                    <th className="border-r border-black p-1">Name</th>
+                    <th className="border-r border-black p-1">Age</th>
+                    <th className="border-r border-black p-1">Relationship</th>
+                    <th className="border-r border-black p-1">Occupation</th>
+                    <th className="border-r border-black p-1">Dependent / Not</th>
+                    <th className="p-1">Contact No</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-black">
+                  {(app.familyDetails || []).map((fam, idx) => (
+                    <tr key={idx}>
+                      <td className="border-r border-black p-1">{idx + 1}</td>
+                      <td className="border-r border-black p-1 font-semibold">{fam.name}</td>
+                      <td className="border-r border-black p-1">{fam.age}</td>
+                      <td className="border-r border-black p-1">{fam.relationship}</td>
+                      <td className="border-r border-black p-1">{fam.occupation}</td>
+                      <td className="border-r border-black p-1">{fam.dependent ? 'Dependent' : 'Not Dependent'}</td>
+                      <td className="p-1 font-mono">{fam.contactNo}</td>
+                    </tr>
+                  ))}
+                  {Array.from({ length: Math.max(0, 3 - (app.familyDetails?.length || 0)) }).map((_, i) => (
+                    <tr key={`empty-fam-${i}`}>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="p-2">&nbsp;</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Questionnaire */}
+            <div className="space-y-1.5 text-xs font-semibold">
+              <div className="border-b border-black/30 pb-1">
+                Are you willing to work on Sundays? Yes / No : <span className="font-normal">{app.additionalInfo?.workSundays || 'Yes'}</span>
+              </div>
+              <div className="border-b border-black/30 pb-1">
+                Joining time required: <span className="font-normal">{app.additionalInfo?.joiningTimeRequired || '30 Days'}</span>
+              </div>
+              <div className="border-b border-black/30 pb-1">
+                Is there any litigation pending against you filed by (a) Any relative (b) Otherwise? If Yes, Please provide details: <span className="font-normal">{app.additionalInfo?.litigationDetails || 'None'}</span>
+              </div>
+            </div>
+
+            {/* References Table */}
+            <div className="space-y-1">
+              <h3 className="text-xs font-bold text-black uppercase">References (From your current Organization):</h3>
+              <table className="w-full text-center text-[11px] border-collapse border border-black">
+                <thead>
+                  <tr className="border-b border-black bg-slate-100 font-bold">
+                    <th className="border-r border-black p-1">S. No.</th>
+                    <th className="border-r border-black p-1">Name</th>
+                    <th className="border-r border-black p-1">Designation</th>
+                    <th className="border-r border-black p-1">Mobile</th>
+                    <th className="p-1">Phone</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-black">
+                  {(app.references || []).map((ref, idx) => (
+                    <tr key={idx}>
+                      <td className="border-r border-black p-1">{idx + 1}</td>
+                      <td className="border-r border-black p-1 font-semibold">{ref.name}</td>
+                      <td className="border-r border-black p-1">{ref.designation}</td>
+                      <td className="border-r border-black p-1 font-mono">{ref.mobile}</td>
+                      <td className="p-1 font-mono">{ref.phone || 'N/A'}</td>
+                    </tr>
+                  ))}
+                  {Array.from({ length: Math.max(0, 2 - (app.references?.length || 0)) }).map((_, i) => (
+                    <tr key={`empty-ref-${i}`}>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="border-r border-black p-2">&nbsp;</td>
+                      <td className="p-2">&nbsp;</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Solemn Declaration */}
+            <div className="pt-4 space-y-6">
+              <p className="text-xs font-bold text-black border-b border-black pb-2">
+                I hereby solemnly declare that all the details furnished above are true to the best of my knowledge
               </p>
+              
+              <div className="grid grid-cols-3 text-xs font-bold pt-4 text-center">
+                <div>Date : <span className="font-normal underline">{app.declarationDate || new Date().toISOString().split('T')[0]}</span></div>
+                <div>Place : <span className="font-normal underline">{app.declarationPlace || 'Coimbatore'}</span></div>
+                <div>Signature : <span className="font-normal italic">_________________</span></div>
+              </div>
             </div>
+
+            {/* Page 2 Footer */}
+            <div className="pt-4 text-[10px] text-slate-600 font-semibold flex justify-between border-t border-black/20">
+              <span>Doc Ref: RGI/HR/FR 001 Rev:02 - Date of Issue: 01-06-2025</span>
+              <span>Page 2 of 2</span>
+            </div>
+
           </div>
 
         </div>
