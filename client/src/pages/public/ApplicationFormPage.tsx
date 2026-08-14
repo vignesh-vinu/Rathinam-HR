@@ -416,34 +416,36 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 animate-fadeIn pb-24">
       
-      {/* Top Header Card */}
-      <div className="p-6 sm:p-8 rounded-2xl border border-sky-400 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 text-white shadow-xl shadow-sky-500/20">
+      {/* Top Header Card - Clean White & Sky Blue Theme */}
+      <div className="bg-white p-6 sm:p-8 rounded-2xl border border-sky-200 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 shadow-md shadow-sky-500/5">
         <div>
-          <div className="flex items-center space-x-3">
-            <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-md bg-white/20 text-white border border-white/30 backdrop-blur-sm">
+          <div className="flex items-center space-x-3 flex-wrap gap-y-2">
+            <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-lg bg-sky-100 text-sky-800 border border-sky-300">
               {organizationId} Candidate Portal
             </span>
-            <span className="text-xs text-sky-100 font-medium">Doc Ref: RGI/3HR/3F6R3 001</span>
+            <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 border border-slate-200">
+              Doc Ref: RGI/3HR/3F6R3 001
+            </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-white mt-2 drop-shadow-sm">
+          <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-slate-900 mt-3">
             Online Employment Application Form
           </h1>
-          <p className="text-xs text-sky-100 mt-1 font-medium">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1.5 font-medium leading-relaxed">
             Please fill in all details accurately as per your official academic and experience credentials.
           </p>
         </div>
 
         {/* Draft Auto-Save Bar */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 flex-shrink-0">
           <button
             onClick={saveDraft}
-            className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 backdrop-blur-sm transition-colors shadow-sm"
+            className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-md shadow-sky-500/20 transition-all hover:scale-105"
           >
-            <Save className="w-4 h-4 text-amber-300" />
+            <Save className="w-4 h-4 text-white" />
             <span>Save Draft</span>
           </button>
           {lastSavedTime && (
-            <span className="text-[11px] text-sky-100 italic font-medium">
+            <span className="text-xs text-slate-500 font-medium italic whitespace-nowrap">
               Saved at {lastSavedTime}
             </span>
           )}
