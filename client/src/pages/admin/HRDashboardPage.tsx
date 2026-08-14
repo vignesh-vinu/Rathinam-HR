@@ -513,7 +513,7 @@ export const HRDashboardPage: React.FC<HRDashboardPageProps> = ({ onNavigate }) 
                       <td className="py-3 px-4">
                         <div className="flex items-center space-x-3">
                           <img 
-                            src={app.personalDetails?.photoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100'} 
+                            src={app.personalDetails?.photoUrl || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} 
                             alt="Photo"
                             className="w-8 h-8 rounded-full object-cover border border-sky-200"
                           />

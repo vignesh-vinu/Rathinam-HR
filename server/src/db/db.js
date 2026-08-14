@@ -48,7 +48,7 @@ const INITIAL_DATA = {
       passwordHash: 'admin123',
       role: 'SUPER_ADMIN',
       organizationId: null,
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250'
+      avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
     },
     {
       id: 'usr-hr-rgu',

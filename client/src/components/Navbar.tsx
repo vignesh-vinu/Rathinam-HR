@@ -120,7 +120,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
                 {/* User Avatar Dropdown */}
                 <div className="flex items-center space-x-3 bg-sky-50/80 py-1.5 px-3 rounded-xl border border-sky-200">
                   <img 
-                    src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100'} 
+                    src={user.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} 
                     alt={user.name}
                     className="w-8 h-8 rounded-full object-cover border border-sky-400"
                   />
