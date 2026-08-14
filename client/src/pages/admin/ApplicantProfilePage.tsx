@@ -632,9 +632,9 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
                   onChange={e => setEditFormData({ ...editFormData, organizationId: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl glass-input text-xs"
                 >
-                  <option value="RGU" className="bg-slate-900">RGU (University)</option>
-                  <option value="RTC" className="bg-slate-900">RTC (Technical Campus)</option>
-                  <option value="RPHARM" className="bg-slate-900">Rathinam Pharmacy</option>
+                  <option value="RGU" className="bg-white text-slate-900">RGU (University)</option>
+                  <option value="RTC" className="bg-white text-slate-900">RTC (Technical Campus)</option>
+                  <option value="RPHARM" className="bg-white text-slate-900">Rathinam Pharmacy</option>
                 </select>
               </div>
 
@@ -719,9 +719,9 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
                   })}
                   className="w-full px-3 py-2 rounded-xl glass-input text-xs"
                 >
-                  <option value="Male" className="bg-slate-900">Male</option>
-                  <option value="Female" className="bg-slate-900">Female</option>
-                  <option value="Other" className="bg-slate-900">Other</option>
+                  <option value="Male" className="bg-white text-slate-900">Male</option>
+                  <option value="Female" className="bg-white text-slate-900">Female</option>
+                  <option value="Other" className="bg-white text-slate-900">Other</option>
                 </select>
               </div>
 
@@ -735,8 +735,8 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
                   })}
                   className="w-full px-3 py-2 rounded-xl glass-input text-xs"
                 >
-                  <option value="Single" className="bg-slate-900">Single</option>
-                  <option value="Married" className="bg-slate-900">Married</option>
+                  <option value="Single" className="bg-white text-slate-900">Single</option>
+                  <option value="Married" className="bg-white text-slate-900">Married</option>
                 </select>
               </div>
             </div>

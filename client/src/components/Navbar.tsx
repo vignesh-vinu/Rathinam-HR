@@ -154,11 +154,11 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
             {user && (
               <button
                 onClick={onOpenNotifications}
-                className="relative p-2 rounded-lg bg-slate-800 text-slate-300"
+                className="relative p-2 rounded-lg bg-sky-50 text-sky-700 border border-sky-200"
               >
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-slate-950 font-bold text-[10px] rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white font-bold text-[10px] rounded-full flex items-center justify-center">
                     {unreadCount}
                   </span>
                 )}
@@ -166,7 +166,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
             )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+              className="p-2.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -177,38 +177,38 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden glass-panel border-b border-slate-800 px-4 py-4 space-y-3 animate-fadeIn">
+        <div className="md:hidden glass-panel border-b border-sky-200 px-4 py-4 space-y-3 animate-fadeIn bg-white/95">
           <button
             onClick={() => { onNavigate('landing'); setMobileMenuOpen(false); }}
-            className="w-full text-left px-4 py-2.5 rounded-lg text-slate-200 hover:bg-slate-800 font-medium"
+            className="w-full text-left px-4 py-2.5 rounded-lg text-slate-700 hover:bg-sky-50 font-medium"
           >
             Home
           </button>
           <button
             onClick={() => { onNavigate('apply-selector'); setMobileMenuOpen(false); }}
-            className="w-full text-left px-4 py-2.5 rounded-lg text-slate-200 hover:bg-slate-800 font-medium"
+            className="w-full text-left px-4 py-2.5 rounded-lg text-slate-700 hover:bg-sky-50 font-medium"
           >
             Apply Online
           </button>
           <button
             onClick={() => { onNavigate('track'); setMobileMenuOpen(false); }}
-            className="w-full text-left px-4 py-2.5 rounded-lg text-slate-200 hover:bg-slate-800 font-medium"
+            className="w-full text-left px-4 py-2.5 rounded-lg text-slate-700 hover:bg-sky-50 font-medium"
           >
             Track Application
           </button>
 
           {user ? (
-            <div className="pt-3 border-t border-slate-800 space-y-2">
+            <div className="pt-3 border-t border-sky-100 space-y-2">
               <button
                 onClick={() => { onNavigate('admin-dashboard'); setMobileMenuOpen(false); }}
-                className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg bg-amber-500/10 text-amber-400 font-bold"
+                className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg bg-sky-50 text-sky-700 font-bold border border-sky-200"
               >
                 <span>HR Admin Dashboard</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
               <button
                 onClick={() => { logout(); setMobileMenuOpen(false); }}
-                className="w-full flex items-center space-x-2 px-4 py-2.5 rounded-lg text-rose-400 hover:bg-rose-500/10 font-semibold"
+                className="w-full flex items-center space-x-2 px-4 py-2.5 rounded-lg text-rose-600 hover:bg-rose-50 font-semibold"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Logout ({user.name})</span>
@@ -217,7 +217,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
           ) : (
             <button
               onClick={() => { onNavigate('admin-login'); setMobileMenuOpen(false); }}
-              className="w-full text-center px-4 py-3 rounded-xl bg-amber-500 text-slate-950 font-bold text-sm"
+              className="w-full text-center px-4 py-3 rounded-xl bg-sky-600 text-white font-bold text-sm shadow-md shadow-sky-500/25"
             >
               HR Admin Login
             </button>

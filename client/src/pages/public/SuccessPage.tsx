@@ -28,40 +28,40 @@ export const SuccessPage: React.FC<SuccessPageProps> = ({ applicationId, applica
   return (
     <div className="max-w-3xl mx-auto px-4 py-16 text-center space-y-8 animate-fadeIn">
       
-      <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 text-emerald-400 flex items-center justify-center mx-auto shadow-2xl shadow-emerald-500/30">
+      <div className="w-20 h-20 rounded-full bg-sky-100 border-2 border-sky-400 text-sky-600 flex items-center justify-center mx-auto shadow-xl shadow-sky-500/20">
         <CheckCircle2 className="w-10 h-10" />
       </div>
 
       <div className="space-y-2">
-        <span className="px-4 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase tracking-widest">
+        <span className="px-4 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300 text-xs font-bold uppercase tracking-widest">
           Submission Confirmed
         </span>
-        <h1 className="text-3xl sm:text-5xl font-heading font-extrabold text-white">
+        <h1 className="text-3xl sm:text-5xl font-heading font-extrabold text-slate-900">
           Application Submitted Successfully!
         </h1>
-        <p className="text-slate-300 text-sm max-w-lg mx-auto">
+        <p className="text-slate-600 text-sm max-w-lg mx-auto">
           Thank you for applying to Rathinam Group. Your application has been logged into our recruitment system and notified to HR Admin.
         </p>
       </div>
 
       {/* Application ID Card */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/40 bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 max-w-lg mx-auto shadow-2xl space-y-4">
-        <p className="text-xs font-bold uppercase tracking-wider text-amber-400">
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-sky-300 bg-gradient-to-r from-sky-50 via-white to-sky-100 max-w-lg mx-auto shadow-xl space-y-4">
+        <p className="text-xs font-bold uppercase tracking-wider text-sky-800">
           Your Unique Application ID
         </p>
-        <div className="flex items-center justify-center space-x-3 bg-slate-950 py-3 px-5 rounded-2xl border border-slate-800">
-          <span className="font-mono text-2xl sm:text-3xl font-extrabold tracking-wider text-white">
+        <div className="flex items-center justify-center space-x-3 bg-white py-3 px-5 rounded-2xl border border-sky-200 shadow-inner">
+          <span className="font-mono text-2xl sm:text-3xl font-extrabold tracking-wider text-sky-900">
             {applicationId}
           </span>
           <button
             onClick={copyToClipboard}
-            className="p-2 rounded-lg bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 transition-colors"
+            className="p-2 rounded-lg bg-sky-100 text-sky-700 hover:bg-sky-200 transition-colors border border-sky-300"
             title="Copy ID"
           >
             <Copy className="w-5 h-5" />
           </button>
         </div>
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-slate-500 font-medium">
           Save or note down this Application ID. You will need it to track your recruitment status online.
         </p>
       </div>
@@ -70,7 +70,7 @@ export const SuccessPage: React.FC<SuccessPageProps> = ({ applicationId, applica
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
         <button
           onClick={() => onNavigate('track', { searchId: applicationId })}
-          className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm flex items-center justify-center space-x-2 shadow-lg"
+          className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-sm flex items-center justify-center space-x-2 shadow-lg shadow-sky-500/25 transition-all hover:scale-105"
         >
           <Search className="w-4 h-4" />
           <span>Track Application Status</span>
@@ -78,7 +78,7 @@ export const SuccessPage: React.FC<SuccessPageProps> = ({ applicationId, applica
 
         <button
           onClick={() => onNavigate('landing')}
-          className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm border border-slate-700 flex items-center justify-center space-x-2"
+          className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-sky-50 text-slate-700 font-bold text-sm border border-sky-200 flex items-center justify-center space-x-2 shadow-sm"
         >
           <span>Back to Home</span>
           <ArrowRight className="w-4 h-4" />

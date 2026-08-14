@@ -59,23 +59,23 @@ export const TrackApplicationPage: React.FC<TrackApplicationPageProps> = ({ init
       
       {/* Header */}
       <div className="text-center space-y-2">
-        <span className="px-3.5 py-1 text-xs font-bold uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-full">
+        <span className="px-3.5 py-1 text-xs font-bold uppercase tracking-widest bg-sky-100 text-sky-700 border border-sky-300 rounded-full">
           Candidate Portal
         </span>
-        <h1 className="text-3xl sm:text-4xl font-heading font-extrabold text-white">
+        <h1 className="text-3xl sm:text-4xl font-heading font-extrabold text-slate-900">
           Track Application Status
         </h1>
-        <p className="text-slate-400 text-sm max-w-lg mx-auto">
+        <p className="text-slate-600 text-sm max-w-lg mx-auto font-medium">
           Enter your Application ID to view your real-time recruitment progression.
         </p>
       </div>
 
       {/* Search Input Box */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-4 max-w-2xl mx-auto">
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-sky-200 shadow-xl shadow-sky-500/5 space-y-4 max-w-2xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1">
-              Application ID <span className="text-rose-400">*</span>
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              Application ID <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
@@ -87,7 +87,7 @@ export const TrackApplicationPage: React.FC<TrackApplicationPageProps> = ({ init
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               Registered Mobile / Email (Optional Verification)
             </label>
             <input
@@ -103,15 +103,15 @@ export const TrackApplicationPage: React.FC<TrackApplicationPageProps> = ({ init
         <button
           onClick={() => handleSearch()}
           disabled={loading}
-          className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm shadow-lg flex items-center justify-center space-x-2 transition-all"
+          className="w-full py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-sm shadow-lg shadow-sky-500/25 flex items-center justify-center space-x-2 transition-all hover:scale-[1.01]"
         >
           <Search className="w-5 h-5" />
           <span>{loading ? 'Searching...' : 'Track Application'}</span>
         </button>
 
         {error && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+          <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4 text-rose-500 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
@@ -119,35 +119,35 @@ export const TrackApplicationPage: React.FC<TrackApplicationPageProps> = ({ init
 
       {/* TRACKING RESULT DISPLAY */}
       {result && (
-        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/40 space-y-8 animate-fadeIn">
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-sky-300 shadow-2xl space-y-8 animate-fadeIn">
           
           {/* Header Card */}
-          <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-800 gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-sky-100 gap-4">
             <div>
               <div className="flex items-center space-x-2">
-                <span className="px-2.5 py-1 text-xs font-extrabold rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                <span className="px-2.5 py-1 text-xs font-extrabold rounded bg-sky-100 text-sky-800 border border-sky-200">
                   {result.organizationId}
                 </span>
-                <span className="font-mono text-sm font-bold text-slate-300">
+                <span className="font-mono text-sm font-bold text-slate-600">
                   {result.applicationId}
                 </span>
               </div>
-              <h2 className="text-2xl font-heading font-bold text-white mt-2">
+              <h2 className="text-2xl font-heading font-bold text-slate-900 mt-2">
                 {result.applicantName}
               </h2>
-              <p className="text-xs text-amber-300 font-medium">{result.positionApplied}</p>
+              <p className="text-xs text-sky-700 font-semibold">{result.positionApplied}</p>
             </div>
 
             <div className="text-right">
               <span className={`px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider inline-block ${
-                result.status === 'SELECTED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' :
-                result.status === 'REJECTED' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40' :
-                result.status === 'SHORTLISTED' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40' :
-                'bg-amber-500/20 text-amber-400 border border-amber-500/40'
+                result.status === 'SELECTED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                result.status === 'REJECTED' ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                result.status === 'SHORTLISTED' ? 'bg-sky-100 text-sky-800 border border-sky-300' :
+                'bg-sky-100 text-sky-800 border border-sky-300'
               }`}>
                 {result.status}
               </span>
-              <p className="text-[11px] text-slate-400 mt-2">
+              <p className="text-[11px] text-slate-500 mt-2 font-medium">
                 Submitted on {new Date(result.submittedAt).toLocaleDateString()}
               </p>
             </div>
@@ -155,7 +155,7 @@ export const TrackApplicationPage: React.FC<TrackApplicationPageProps> = ({ init
 
           {/* VISUAL TIMELINE STEPPER */}
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
               Recruitment Progression Timeline
             </h3>
 
@@ -172,11 +172,11 @@ export const TrackApplicationPage: React.FC<TrackApplicationPageProps> = ({ init
                 return (
                   <div key={idx} className={`p-4 rounded-xl border text-center transition-all ${
                     isPassed 
-                      ? 'bg-amber-500/10 border-amber-500/40 text-amber-300' 
-                      : 'bg-slate-900/50 border-slate-800 text-slate-500'
+                      ? 'bg-sky-50 border-sky-300 text-sky-900 shadow-sm' 
+                      : 'bg-slate-50 border-slate-200 text-slate-400'
                   }`}>
                     <div className={`w-8 h-8 rounded-full font-bold text-xs flex items-center justify-center mx-auto mb-2 ${
-                      isPassed ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-500'
+                      isPassed ? 'bg-sky-600 text-white shadow-md shadow-sky-500/25' : 'bg-slate-200 text-slate-500'
                     }`}>
                       {isPassed ? <CheckCircle2 className="w-4 h-4" /> : idx + 1}
                     </div>
@@ -189,18 +189,18 @@ export const TrackApplicationPage: React.FC<TrackApplicationPageProps> = ({ init
 
           {/* Detailed Activity Logs */}
           {result.history && result.history.length > 0 && (
-            <div className="pt-4 border-t border-slate-800 space-y-3">
-              <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+            <div className="pt-4 border-t border-sky-100 space-y-3">
+              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Status Event History
               </h4>
               <div className="space-y-2">
                 {result.history.map((item: any, idx: number) => (
-                  <div key={idx} className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs flex items-start justify-between">
+                  <div key={idx} className="p-3 rounded-xl bg-sky-50/60 border border-sky-200 text-xs flex items-start justify-between">
                     <div>
-                      <span className="font-bold text-amber-400">{item.toStatus}</span>
-                      <p className="text-slate-300 mt-0.5">{item.remarks}</p>
+                      <span className="font-bold text-sky-700">{item.toStatus}</span>
+                      <p className="text-slate-700 mt-0.5">{item.remarks}</p>
                     </div>
-                    <span className="text-[10px] text-slate-400 flex-shrink-0 ml-4">
+                    <span className="text-[10px] text-slate-500 flex-shrink-0 ml-4">
                       {new Date(item.timestamp).toLocaleString()}
                     </span>
                   </div>

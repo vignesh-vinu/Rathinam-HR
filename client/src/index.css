@@ -3,23 +3,27 @@
 @tailwind utilities;
 
 @layer base {
+  :root, html, body {
+    color-scheme: light !important;
+  }
+
   body {
-    @apply bg-white text-slate-900 min-h-screen font-sans antialiased;
+    @apply bg-slate-50 text-slate-900 min-h-screen font-sans antialiased;
     background-image: 
-      radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.08) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(37, 99, 235, 0.06) 0px, transparent 50%),
-      radial-gradient(at 50% 100%, rgba(56, 189, 248, 0.05) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.12) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.10) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(186, 230, 253, 0.15) 0px, transparent 50%);
     background-attachment: fixed;
   }
 }
 
 /* Glassmorphism Cards (White + Sky Blue Theme) */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(186, 230, 253, 0.6);
-  box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.08), 0 4px 12px 0 rgba(15, 23, 42, 0.03);
+  border: 1px solid rgba(186, 230, 253, 0.7);
+  box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.1), 0 4px 12px 0 rgba(15, 23, 42, 0.03);
 }
 
 .glass-panel-hover {
@@ -28,9 +32,9 @@
 
 .glass-panel-hover:hover {
   background: #ffffff;
-  border-color: rgba(14, 165, 233, 0.5);
+  border-color: rgba(14, 165, 233, 0.6);
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px -15px rgba(14, 165, 233, 0.18), 0 8px 24px 0 rgba(15, 23, 42, 0.05);
+  box-shadow: 0 20px 40px -15px rgba(14, 165, 233, 0.2), 0 8px 24px 0 rgba(15, 23, 42, 0.05);
 }
 
 .glass-input {
@@ -43,7 +47,35 @@
 .glass-input:focus {
   outline: none;
   border-color: #0284c7;
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
+}
+
+/* Custom Select & Option Styling - Pure White & Sky Blue Theme */
+select {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #bae6fd !important;
+}
+
+select:focus {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25) !important;
+}
+
+option {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  padding: 10px 14px;
+}
+
+option:hover,
+option:focus,
+option:active,
+option:checked {
+  background-color: #e0f2fe !important; /* Sky Blue Light Accent */
+  color: #0369a1 !important; /* Sky Blue Dark Text */
 }
 
 /* Custom Scrollbar (Sky Blue) */
@@ -86,3 +118,4 @@
     width: 100% !important;
   }
 }
+

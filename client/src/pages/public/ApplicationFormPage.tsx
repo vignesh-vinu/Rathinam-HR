@@ -417,18 +417,18 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
     <div className="max-w-5xl mx-auto px-4 py-8 animate-fadeIn pb-24">
       
       {/* Top Header Card */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950">
+      <div className="glass-panel p-6 rounded-2xl border border-sky-400 mb-8 flex flex-col md:flex-row items-center justify-between gap-4 bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 text-white shadow-xl shadow-sky-500/15">
         <div>
           <div className="flex items-center space-x-3">
-            <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30">
+            <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-md bg-white/20 text-white border border-white/30 backdrop-blur-sm">
               {organizationId} Candidate Portal
             </span>
-            <span className="text-xs text-slate-400">Doc Ref: RGI/3HR/3F6R3 001</span>
+            <span className="text-xs text-sky-100 font-medium">Doc Ref: RGI/3HR/3F6R3 001</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-white mt-2">
             Online Employment Application Form
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-sky-100 mt-1 font-medium">
             Please fill in all details accurately as per your official academic and experience credentials.
           </p>
         </div>
@@ -437,13 +437,13 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         <div className="flex items-center space-x-3">
           <button
             onClick={saveDraft}
-            className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors"
+            className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold border border-white/30 backdrop-blur-sm transition-colors shadow-sm"
           >
-            <Save className="w-4 h-4 text-amber-400" />
+            <Save className="w-4 h-4 text-amber-300" />
             <span>Save Draft</span>
           </button>
           {lastSavedTime && (
-            <span className="text-[11px] text-slate-400 italic">
+            <span className="text-[11px] text-sky-100 italic">
               Saved at {lastSavedTime}
             </span>
           )}
@@ -451,7 +451,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
       </div>
 
       {/* STEPPER PROGRESS BAR */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-800 mb-8 overflow-x-auto">
+      <div className="glass-panel p-4 rounded-2xl border border-sky-200 mb-8 overflow-x-auto shadow-sm">
         <div className="flex items-center justify-between min-w-[650px]">
           {steps.map((step, idx) => {
             const isCompleted = currentStep > step.num;
@@ -463,15 +463,15 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                   if (step.num < currentStep) setCurrentStep(step.num);
                 }}
                 className={`flex flex-col items-center cursor-pointer transition-all ${
-                  isCurrent ? 'text-amber-400' : isCompleted ? 'text-emerald-400' : 'text-slate-500'
+                  isCurrent ? 'text-sky-700 font-bold' : isCompleted ? 'text-emerald-700 font-semibold' : 'text-slate-400'
                 }`}
               >
                 <div className={`w-9 h-9 rounded-full font-bold text-xs flex items-center justify-center border transition-all mb-1.5 ${
                   isCurrent 
-                    ? 'bg-amber-500 text-slate-950 border-amber-400 ring-4 ring-amber-500/20' 
+                    ? 'bg-sky-600 text-white border-sky-500 ring-4 ring-sky-500/20 shadow-md shadow-sky-500/20' 
                     : isCompleted 
-                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' 
-                    : 'bg-slate-900 border-slate-800 text-slate-400'
+                    ? 'bg-emerald-100 text-emerald-700 border-emerald-300' 
+                    : 'bg-sky-50 border-sky-200 text-sky-700'
                 }`}>
                   {isCompleted ? <Check className="w-5 h-5" /> : step.num}
                 </div>
@@ -484,13 +484,13 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         </div>
 
         {/* Progress % Bar */}
-        <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-4 pt-3 border-t border-sky-100 flex items-center justify-between text-xs text-slate-600 font-medium">
           <span>Form Progress</span>
-          <span className="font-bold text-amber-400">{calculateProgress()}% Completed</span>
+          <span className="font-bold text-sky-700">{calculateProgress()}% Completed</span>
         </div>
-        <div className="w-full bg-slate-900 rounded-full h-2 mt-1 overflow-hidden">
+        <div className="w-full bg-sky-100 rounded-full h-2 mt-1 overflow-hidden">
           <div 
-            className="bg-gradient-to-r from-amber-500 to-emerald-400 h-2 transition-all duration-500" 
+            className="bg-gradient-to-r from-sky-500 to-blue-600 h-2 transition-all duration-500" 
             style={{ width: `${calculateProgress()}%` }}
           />
         </div>
@@ -498,28 +498,28 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
       {/* Error Callout */}
       {errorMsg && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center space-x-3">
-          <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
+        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center space-x-3 shadow-sm">
+          <AlertCircle className="w-5 h-5 text-rose-500 flex-shrink-0" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {/* FORM STEP CONTENT */}
-      <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 min-h-[400px]">
+      <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-sky-200 shadow-lg shadow-sky-500/5 min-h-[400px]">
         
         {/* STEP 1: PERSONAL DETAILS */}
         {currentStep === 1 && (
           <div className="space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-heading font-extrabold text-white flex items-center space-x-2 pb-3 border-b border-slate-800">
-              <User className="w-5 h-5 text-amber-400" />
+            <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2 pb-3 border-b border-sky-100">
+              <User className="w-5 h-5 text-sky-600" />
               <span>Step 1: Position & Candidate Personal Details</span>
             </h3>
 
             {/* Position Applied For & Source */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Position Applied For <span className="text-rose-400">*</span>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Position Applied For <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -531,7 +531,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Source of Application
                 </label>
                 <select
@@ -539,11 +539,11 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                   onChange={e => setFormData({ ...formData, source: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl glass-input text-sm"
                 >
-                  <option value="Career Portal" className="bg-slate-900">Career Portal / Website</option>
-                  <option value="LinkedIn" className="bg-slate-900">LinkedIn</option>
-                  <option value="Naukri" className="bg-slate-900">Naukri.com</option>
-                  <option value="Paper Advertisement" className="bg-slate-900">Paper Advertisement</option>
-                  <option value="Employee Referral" className="bg-slate-900">Employee Referral</option>
+                  <option value="Career Portal" className="bg-white text-slate-900">Career Portal / Website</option>
+                  <option value="LinkedIn" className="bg-white text-slate-900">LinkedIn</option>
+                  <option value="Naukri" className="bg-white text-slate-900">Naukri.com</option>
+                  <option value="Paper Advertisement" className="bg-white text-slate-900">Paper Advertisement</option>
+                  <option value="Employee Referral" className="bg-white text-slate-900">Employee Referral</option>
                 </select>
               </div>
             </div>
@@ -551,8 +551,8 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
             {/* Name Fields (First, Middle, Last) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  First Name (Block Letters) <span className="text-rose-400">*</span>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  First Name (Block Letters) <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -567,7 +567,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Middle Name
                 </label>
                 <input
@@ -583,8 +583,8 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Last Name / Initial <span className="text-rose-400">*</span>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Last Name / Initial <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -602,8 +602,8 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
             {/* DOB, Age, Gender, Marital Status */}
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Date of Birth <span className="text-rose-400">*</span>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Date of Birth <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -623,20 +623,20 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Age (Years)
                 </label>
                 <input
                   type="number"
                   readOnly
                   value={formData.personalDetails?.age || ''}
-                  className="w-full px-4 py-2.5 rounded-xl glass-input text-sm bg-slate-900/60 text-slate-400"
+                  className="w-full px-4 py-2.5 rounded-xl glass-input text-sm bg-sky-50/60 text-slate-700 font-semibold border-sky-200"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Gender <span className="text-rose-400">*</span>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Gender <span className="text-rose-500">*</span>
                 </label>
                 <select
                   value={formData.personalDetails?.gender || ''}
@@ -646,15 +646,15 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                   })}
                   className="w-full px-4 py-2.5 rounded-xl glass-input text-sm"
                 >
-                  <option value="" className="bg-slate-900">-- Select Gender --</option>
-                  <option value="Male" className="bg-slate-900">Male</option>
-                  <option value="Female" className="bg-slate-900">Female</option>
-                  <option value="Other" className="bg-slate-900">Other</option>
+                  <option value="" className="bg-white text-slate-900">-- Select Gender --</option>
+                  <option value="Male" className="bg-white text-slate-900">Male</option>
+                  <option value="Female" className="bg-white text-slate-900">Female</option>
+                  <option value="Other" className="bg-white text-slate-900">Other</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Marital Status
                 </label>
                 <select
@@ -665,10 +665,10 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                   })}
                   className="w-full px-4 py-2.5 rounded-xl glass-input text-sm"
                 >
-                  <option value="" className="bg-slate-900">-- Select Status --</option>
-                  <option value="Single" className="bg-slate-900">Single</option>
-                  <option value="Married" className="bg-slate-900">Married</option>
-                  <option value="Other" className="bg-slate-900">Other</option>
+                  <option value="" className="bg-white text-slate-900">-- Select Status --</option>
+                  <option value="Single" className="bg-white text-slate-900">Single</option>
+                  <option value="Married" className="bg-white text-slate-900">Married</option>
+                  <option value="Other" className="bg-white text-slate-900">Other</option>
                 </select>
               </div>
             </div>
@@ -676,7 +676,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
             {/* Nationality & Category */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Nationality
                 </label>
                 <input
@@ -691,7 +691,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Category
                 </label>
                 <select
@@ -702,10 +702,10 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                   })}
                   className="w-full px-4 py-2.5 rounded-xl glass-input text-sm"
                 >
-                  <option value="General" className="bg-slate-900">General / OC</option>
-                  <option value="OBC" className="bg-slate-900">OBC / BC / MBC</option>
-                  <option value="SC" className="bg-slate-900">SC</option>
-                  <option value="ST" className="bg-slate-900">ST</option>
+                  <option value="General" className="bg-white text-slate-900">General / OC</option>
+                  <option value="OBC" className="bg-white text-slate-900">OBC / BC / MBC</option>
+                  <option value="SC" className="bg-white text-slate-900">SC</option>
+                  <option value="ST" className="bg-white text-slate-900">ST</option>
                 </select>
               </div>
             </div>
@@ -716,14 +716,14 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         {/* STEP 2: CONTACT DETAILS */}
         {currentStep === 2 && (
           <div className="space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-heading font-extrabold text-white flex items-center space-x-2 pb-3 border-b border-slate-800">
-              <Mail className="w-5 h-5 text-amber-400" />
+            <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2 pb-3 border-b border-sky-100">
+              <Mail className="w-5 h-5 text-sky-600" />
               <span>Step 2: Contact Address & Communication</span>
             </h3>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
-                Full Contact Address <span className="text-rose-400">*</span>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Full Contact Address <span className="text-rose-500">*</span>
               </label>
               <textarea
                 rows={3}
@@ -739,10 +739,10 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1 flex items-center justify-between">
-                  <span>Pincode <span className="text-rose-400">*</span></span>
+                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  <span>Pincode <span className="text-rose-500">*</span></span>
                   {pincodeAutoDetected && (
-                    <span className="text-[10px] text-emerald-400 font-extrabold animate-pulse">
+                    <span className="text-[10px] text-emerald-600 font-extrabold animate-pulse">
                       ✓ {pincodeAutoDetected}
                     </span>
                   )}
@@ -758,7 +758,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   City
                 </label>
                 <input
@@ -773,7 +773,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   State
                 </label>
                 <input
@@ -790,8 +790,8 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Email ID <span className="text-rose-400">*</span>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Email ID <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -806,8 +806,8 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Mobile Number <span className="text-rose-400">*</span>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Mobile Number <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="tel"
@@ -822,7 +822,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Alternate Phone / Landline
                 </label>
                 <input
@@ -843,35 +843,35 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         {/* STEP 3: EDUCATIONAL QUALIFICATIONS */}
         {currentStep === 3 && (
           <div className="space-y-6 animate-fadeIn">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="text-lg font-heading font-extrabold text-white flex items-center space-x-2">
-                <GraduationCap className="w-5 h-5 text-amber-400" />
+            <div className="flex items-center justify-between pb-3 border-b border-sky-100">
+              <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2">
+                <GraduationCap className="w-5 h-5 text-sky-600" />
                 <span>Step 3: Educational Qualifications (From Latest)</span>
               </h3>
               <button
                 onClick={addEducationRow}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-xs font-bold border border-amber-500/30"
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold border border-sky-200 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 <span>+ Add Qualification</span>
               </button>
             </div>
 
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               List your academic degrees starting from your highest / latest qualification.
             </p>
 
             <div className="space-y-6">
               {(formData.educationDetails || []).map((edu, idx) => (
-                <div key={edu.id} className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 relative space-y-4">
+                <div key={edu.id} className="p-4 rounded-xl bg-sky-50/50 border border-sky-200/80 relative space-y-4 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold text-amber-400 uppercase tracking-wider">
+                    <span className="text-xs font-extrabold text-sky-700 uppercase tracking-wider">
                       Entry #{idx + 1}
                     </span>
                     {formData.educationDetails!.length > 1 && (
                       <button
                         onClick={() => removeEducationRow(idx)}
-                        className="text-rose-400 hover:text-rose-300 p-1 text-xs flex items-center space-x-1"
+                        className="text-rose-600 hover:text-rose-700 p-1 text-xs flex items-center space-x-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         <span>Remove</span>
@@ -881,7 +881,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Degree / Qualification
                       </label>
                       <input
@@ -898,7 +898,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Division / Class
                       </label>
                       <select
@@ -910,15 +910,15 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                         }}
                         className="w-full px-3 py-2 rounded-lg glass-input text-xs"
                       >
-                        <option value="First Class with Distinction" className="bg-slate-900">First Class with Distinction</option>
-                        <option value="First Class" className="bg-slate-900">First Class</option>
-                        <option value="Second Class" className="bg-slate-900">Second Class</option>
-                        <option value="Pass Class" className="bg-slate-900">Pass Class</option>
+                        <option value="First Class with Distinction" className="bg-white text-slate-900">First Class with Distinction</option>
+                        <option value="First Class" className="bg-white text-slate-900">First Class</option>
+                        <option value="Second Class" className="bg-white text-slate-900">Second Class</option>
+                        <option value="Pass Class" className="bg-white text-slate-900">Pass Class</option>
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Year of Passing
                       </label>
                       <input
@@ -937,7 +937,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         College Name
                       </label>
                       <input
@@ -954,7 +954,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Board / University
                       </label>
                       <input
@@ -973,7 +973,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Major Subjects / Credit Points
                       </label>
                       <input
@@ -990,7 +990,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         % of Marks / CGPA
                       </label>
                       <input
@@ -1016,14 +1016,14 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         {/* STEP 4: WORK EXPERIENCE */}
         {currentStep === 4 && (
           <div className="space-y-6 animate-fadeIn">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="text-lg font-heading font-extrabold text-white flex items-center space-x-2">
-                <Briefcase className="w-5 h-5 text-amber-400" />
+            <div className="flex items-center justify-between pb-3 border-b border-sky-100">
+              <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2">
+                <Briefcase className="w-5 h-5 text-sky-600" />
                 <span>Step 4: Professional Experience (Starting from Present)</span>
               </h3>
               <button
                 onClick={addExperienceRow}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-xs font-bold border border-amber-500/30"
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold border border-sky-200 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 <span>+ Add Experience</span>
@@ -1031,9 +1031,9 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
             </div>
 
             {/* Financial Summary */}
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-sky-50/70 border border-sky-200">
               <div>
-                <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
                   Total Experience (Years)
                 </label>
                 <input
@@ -1049,7 +1049,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
                   Notice Period (Days)
                 </label>
                 <input
@@ -1065,7 +1065,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
                   Current Gross PA (₹)
                 </label>
                 <input
@@ -1081,7 +1081,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
                   Expected Gross PA (₹)
                 </label>
                 <input
@@ -1100,15 +1100,15 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
             {/* Experience Table Entries */}
             <div className="space-y-6">
               {(formData.experienceDetails || []).map((exp, idx) => (
-                <div key={exp.id} className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-4">
+                <div key={exp.id} className="p-4 rounded-xl bg-sky-50/50 border border-sky-200/80 space-y-4 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold text-amber-400 uppercase tracking-wider">
+                    <span className="text-xs font-extrabold text-sky-700 uppercase tracking-wider">
                       Work Entry #{idx + 1}
                     </span>
                     {formData.experienceDetails!.length > 1 && (
                       <button
                         onClick={() => removeExperienceRow(idx)}
-                        className="text-rose-400 hover:text-rose-300 p-1 text-xs flex items-center space-x-1"
+                        className="text-rose-600 hover:text-rose-700 p-1 text-xs flex items-center space-x-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         <span>Remove</span>
@@ -1118,7 +1118,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Name of Organization
                       </label>
                       <input
@@ -1135,7 +1135,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Designation
                       </label>
                       <input
@@ -1154,7 +1154,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         From Date
                       </label>
                       <input
@@ -1170,7 +1170,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         To Date (Or 'Present')
                       </label>
                       <input
@@ -1187,7 +1187,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Gross Annual Salary (₹)
                       </label>
                       <input
@@ -1204,7 +1204,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Reason for Leaving
                       </label>
                       <input
@@ -1230,14 +1230,14 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         {/* STEP 5: SKILLS & LANGUAGES KNOWN */}
         {currentStep === 5 && (
           <div className="space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-heading font-extrabold text-white flex items-center space-x-2 pb-3 border-b border-slate-800">
-              <Award className="w-5 h-5 text-amber-400" />
+            <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2 pb-3 border-b border-sky-100">
+              <Award className="w-5 h-5 text-sky-600" />
               <span>Step 5: Certifications & Languages Known Grid</span>
             </h3>
 
             {/* Certifications text area */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Certifications (if any)
               </label>
               <textarea
@@ -1251,15 +1251,15 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
             {/* Languages Known Grid */}
             <div>
-              <h4 className="text-sm font-bold text-amber-400 mb-3 flex items-center space-x-2">
+              <h4 className="text-sm font-bold text-sky-700 mb-3 flex items-center space-x-2">
                 <Languages className="w-4 h-4" />
                 <span>Languages Known (Read, Write, Speak, Understand)</span>
               </h4>
 
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto rounded-xl border border-sky-200">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-slate-900 border-b border-slate-800 text-slate-300">
+                    <tr className="bg-sky-100/70 border-b border-sky-200 text-sky-900 font-bold">
                       <th className="py-2.5 px-3">S.No</th>
                       <th className="py-2.5 px-3">Language</th>
                       <th className="py-2.5 px-3 text-center">Read (R)</th>
@@ -1268,11 +1268,11 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                       <th className="py-2.5 px-3 text-center">Understand (U)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-sky-100">
                     {(formData.languagesKnown || []).map((lang, idx) => (
-                      <tr key={idx} className="hover:bg-slate-900/40">
-                        <td className="py-2.5 px-3 text-slate-400">{idx + 1}</td>
-                        <td className="py-2.5 px-3 font-semibold text-slate-200">{lang.language}</td>
+                      <tr key={idx} className="hover:bg-sky-50/60">
+                        <td className="py-2.5 px-3 text-slate-500 font-medium">{idx + 1}</td>
+                        <td className="py-2.5 px-3 font-semibold text-slate-800">{lang.language}</td>
                         <td className="py-2.5 px-3 text-center">
                           <input
                             type="checkbox"
@@ -1282,7 +1282,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                               updated[idx].read = e.target.checked;
                               setFormData({ ...formData, languagesKnown: updated });
                             }}
-                            className="w-4 h-4 accent-amber-500 rounded cursor-pointer"
+                            className="w-4 h-4 accent-sky-600 rounded cursor-pointer"
                           />
                         </td>
                         <td className="py-2.5 px-3 text-center">
@@ -1294,7 +1294,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                               updated[idx].write = e.target.checked;
                               setFormData({ ...formData, languagesKnown: updated });
                             }}
-                            className="w-4 h-4 accent-amber-500 rounded cursor-pointer"
+                            className="w-4 h-4 accent-sky-600 rounded cursor-pointer"
                           />
                         </td>
                         <td className="py-2.5 px-3 text-center">
@@ -1306,7 +1306,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                               updated[idx].speak = e.target.checked;
                               setFormData({ ...formData, languagesKnown: updated });
                             }}
-                            className="w-4 h-4 accent-amber-500 rounded cursor-pointer"
+                            className="w-4 h-4 accent-sky-600 rounded cursor-pointer"
                           />
                         </td>
                         <td className="py-2.5 px-3 text-center">
@@ -1318,7 +1318,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                               updated[idx].understand = e.target.checked;
                               setFormData({ ...formData, languagesKnown: updated });
                             }}
-                            className="w-4 h-4 accent-amber-500 rounded cursor-pointer"
+                            className="w-4 h-4 accent-sky-600 rounded cursor-pointer"
                           />
                         </td>
                       </tr>
@@ -1334,15 +1334,15 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         {/* STEP 6: REFERENCES & DECLARATIONS */}
         {currentStep === 6 && (
           <div className="space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-heading font-extrabold text-white flex items-center space-x-2 pb-3 border-b border-slate-800">
-              <Users className="w-5 h-5 text-amber-400" />
+            <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2 pb-3 border-b border-sky-100">
+              <Users className="w-5 h-5 text-sky-600" />
               <span>Step 6: References & Questionnaire</span>
             </h3>
 
             {/* Questions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-sky-50/70 border border-sky-200">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Are you willing to work on Sundays?
                 </label>
                 <select
@@ -1353,13 +1353,13 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                   })}
                   className="w-full px-3 py-2 rounded-lg glass-input text-xs"
                 >
-                  <option value="Yes" className="bg-slate-900">Yes</option>
-                  <option value="No" className="bg-slate-900">No</option>
+                  <option value="Yes" className="bg-white text-slate-900">Yes</option>
+                  <option value="No" className="bg-white text-slate-900">No</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Joining Time Required
                 </label>
                 <input
@@ -1377,7 +1377,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
             {/* Litigation Details */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Is there any litigation pending against you (filed by relative / otherwise)? If Yes, provide details.
               </label>
               <input
@@ -1394,13 +1394,13 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
             {/* References */}
             <div>
-              <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-3">
+              <h4 className="text-xs font-bold text-sky-700 uppercase tracking-wider mb-3">
                 Current Organization References (2 Required)
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {(formData.references || []).map((ref, idx) => (
-                  <div key={idx} className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
-                    <p className="text-[11px] font-bold text-slate-300">Reference #{idx + 1}</p>
+                  <div key={idx} className="p-3.5 rounded-xl bg-sky-50/50 border border-sky-200/80 space-y-2 shadow-sm">
+                    <p className="text-[11px] font-bold text-sky-800">Reference #{idx + 1}</p>
                     <input
                       type="text"
                       placeholder="Name"
@@ -1445,12 +1445,12 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         {/* STEP 7: DOCUMENTS UPLOAD */}
         {currentStep === 7 && (
           <div className="space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-heading font-extrabold text-white flex items-center space-x-2 pb-3 border-b border-slate-800">
-              <Upload className="w-5 h-5 text-amber-400" />
+            <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2 pb-3 border-b border-sky-100">
+              <Upload className="w-5 h-5 text-sky-600" />
               <span>Step 7: Upload Supporting Documents</span>
             </h3>
 
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Upload your Resume/CV, Photograph, and Educational Certificates (PDF / Image, Max 10MB).
             </p>
 
@@ -1458,11 +1458,11 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               
               {/* Resume Upload */}
-              <div className="p-4 rounded-xl glass-panel text-center border-dashed border-2 border-slate-700 hover:border-amber-400/60 transition-colors">
-                <FileText className="w-8 h-8 text-amber-400 mx-auto mb-2" />
-                <p className="text-xs font-bold text-slate-200">Resume / CV</p>
-                <p className="text-[10px] text-slate-400 mb-3">PDF or DOCX</p>
-                <label className="px-3 py-1.5 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs cursor-pointer hover:bg-amber-400 inline-block">
+              <div className="p-4 rounded-xl bg-sky-50/50 text-center border-dashed border-2 border-sky-300 hover:border-sky-500 transition-colors shadow-sm">
+                <FileText className="w-8 h-8 text-sky-600 mx-auto mb-2" />
+                <p className="text-xs font-bold text-slate-800">Resume / CV</p>
+                <p className="text-[10px] text-slate-500 mb-3">PDF or DOCX</p>
+                <label className="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-bold text-xs cursor-pointer hover:bg-sky-500 inline-block shadow-sm">
                   <span>Browse CV</span>
                   <input
                     type="file"
@@ -1474,11 +1474,11 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               {/* Photo Upload */}
-              <div className="p-4 rounded-xl glass-panel text-center border-dashed border-2 border-slate-700 hover:border-amber-400/60 transition-colors">
-                <User className="w-8 h-8 text-cyan-400 mx-auto mb-2" />
-                <p className="text-xs font-bold text-slate-200">Passport Photo</p>
-                <p className="text-[10px] text-slate-400 mb-3">JPG or PNG</p>
-                <label className="px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-bold text-xs cursor-pointer hover:bg-cyan-400 inline-block">
+              <div className="p-4 rounded-xl bg-sky-50/50 text-center border-dashed border-2 border-sky-300 hover:border-sky-500 transition-colors shadow-sm">
+                <User className="w-8 h-8 text-sky-600 mx-auto mb-2" />
+                <p className="text-xs font-bold text-slate-800">Passport Photo</p>
+                <p className="text-[10px] text-slate-500 mb-3">JPG or PNG</p>
+                <label className="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-bold text-xs cursor-pointer hover:bg-sky-500 inline-block shadow-sm">
                   <span>Browse Photo</span>
                   <input
                     type="file"
@@ -1490,11 +1490,11 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               {/* Certificate Upload */}
-              <div className="p-4 rounded-xl glass-panel text-center border-dashed border-2 border-slate-700 hover:border-amber-400/60 transition-colors">
-                <Award className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
-                <p className="text-xs font-bold text-slate-200">Certificate / ID Proof</p>
-                <p className="text-[10px] text-slate-400 mb-3">PDF or Image</p>
-                <label className="px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs cursor-pointer hover:bg-emerald-400 inline-block">
+              <div className="p-4 rounded-xl bg-sky-50/50 text-center border-dashed border-2 border-sky-300 hover:border-sky-500 transition-colors shadow-sm">
+                <Award className="w-8 h-8 text-sky-600 mx-auto mb-2" />
+                <p className="text-xs font-bold text-slate-800">Certificate / ID Proof</p>
+                <p className="text-[10px] text-slate-500 mb-3">PDF or Image</p>
+                <label className="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-bold text-xs cursor-pointer hover:bg-sky-500 inline-block shadow-sm">
                   <span>Browse Doc</span>
                   <input
                     type="file"
@@ -1508,31 +1508,31 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
             </div>
 
             {uploadingDoc && (
-              <div className="text-center py-2 text-xs text-amber-400 font-semibold animate-pulse">
+              <div className="text-center py-2 text-xs text-sky-700 font-semibold animate-pulse">
                 Uploading file to Rathinam HR server...
               </div>
             )}
 
             {/* Document List */}
             <div className="space-y-2 mt-6">
-              <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Uploaded Documents ({(formData.documents || []).length})
               </h4>
               {(formData.documents || []).length === 0 ? (
-                <p className="text-xs text-slate-500 italic">No files uploaded yet.</p>
+                <p className="text-xs text-slate-400 italic">No files uploaded yet.</p>
               ) : (
                 (formData.documents || []).map(doc => (
-                  <div key={doc.id} className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+                  <div key={doc.id} className="p-3 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-between shadow-sm">
                     <div className="flex items-center space-x-3">
-                      <FileText className="w-5 h-5 text-amber-400" />
+                      <FileText className="w-5 h-5 text-sky-600" />
                       <div>
-                        <p className="text-xs font-bold text-slate-200">{doc.name}</p>
-                        <p className="text-[10px] text-slate-400">{doc.type} • {doc.size}</p>
+                        <p className="text-xs font-bold text-slate-800">{doc.name}</p>
+                        <p className="text-[10px] text-slate-500">{doc.type} • {doc.size}</p>
                       </div>
                     </div>
                     <button
                       onClick={() => removeDocument(doc.id)}
-                      className="p-1 text-rose-400 hover:bg-rose-500/10 rounded"
+                      className="p-1 text-rose-600 hover:bg-rose-100 rounded"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -1542,15 +1542,15 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
             </div>
 
             {/* Solemn Declaration Checkbox */}
-            <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 mt-8 space-y-3">
+            <div className="p-5 rounded-2xl bg-sky-50 border border-sky-200 mt-8 space-y-3 shadow-sm">
               <label className="flex items-start space-x-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={formData.declarationAccepted}
                   onChange={e => setFormData({ ...formData, declarationAccepted: e.target.checked })}
-                  className="w-5 h-5 accent-amber-500 rounded mt-0.5"
+                  className="w-5 h-5 accent-sky-600 rounded mt-0.5"
                 />
-                <span className="text-xs text-slate-200 leading-relaxed font-medium">
+                <span className="text-xs text-slate-700 leading-relaxed font-medium">
                   <strong>Solemn Declaration:</strong> I hereby solemnly declare that all details furnished above are true, complete and correct to the best of my knowledge and belief. I understand that any misrepresentation of facts will render my candidature liable to immediate disqualification.
                 </span>
               </label>
@@ -1562,34 +1562,34 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         {/* STEP 8: REVIEW BEFORE SUBMISSION */}
         {currentStep === 8 && (
           <div className="space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-heading font-extrabold text-white flex items-center space-x-2 pb-3 border-b border-slate-800">
-              <Eye className="w-5 h-5 text-amber-400" />
+            <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2 pb-3 border-b border-sky-100">
+              <Eye className="w-5 h-5 text-sky-600" />
               <span>Step 8: Review Candidate Profile Before Final Submit</span>
             </h3>
 
-            <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-6">
+            <div className="p-6 rounded-2xl bg-sky-50/60 border border-sky-200 space-y-6 shadow-sm">
               
               {/* Summary Card Header */}
-              <div className="flex flex-col sm:flex-row items-center justify-between pb-4 border-b border-slate-800 gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-between pb-4 border-b border-sky-200 gap-4">
                 <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 rounded-full bg-slate-800 border border-amber-400 flex items-center justify-center overflow-hidden">
+                  <div className="w-16 h-16 rounded-full bg-white border-2 border-sky-400 flex items-center justify-center overflow-hidden shadow-sm">
                     {formData.personalDetails?.photoUrl ? (
                       <img src={formData.personalDetails.photoUrl} alt="Photo" className="w-full h-full object-cover" />
                     ) : (
-                      <User className="w-8 h-8 text-amber-400" />
+                      <User className="w-8 h-8 text-sky-600" />
                     )}
                   </div>
                   <div>
-                    <h4 className="text-xl font-heading font-bold text-white">
+                    <h4 className="text-xl font-heading font-bold text-slate-900">
                       {formData.personalDetails?.firstName} {formData.personalDetails?.middleName} {formData.personalDetails?.lastName}
                     </h4>
-                    <p className="text-xs text-amber-400 font-semibold mt-0.5">
+                    <p className="text-xs text-sky-700 font-semibold mt-0.5">
                       {formData.positionApplied} • ({organizationId})
                     </p>
-                    <p className="text-xs text-slate-400">{formData.contactDetails?.email} • {formData.contactDetails?.mobile}</p>
+                    <p className="text-xs text-slate-500">{formData.contactDetails?.email} • {formData.contactDetails?.mobile}</p>
                   </div>
                 </div>
-                <span className="px-3 py-1 text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 rounded-full">
+                <span className="px-3 py-1 text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full">
                   Ready to Submit
                 </span>
               </div>
@@ -1597,26 +1597,26 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               {/* Grid Summaries */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
                 <div>
-                  <h5 className="font-bold text-amber-400 uppercase tracking-wider mb-2">Personal & Contact</h5>
-                  <p className="text-slate-300"><strong>DOB & Age:</strong> {formData.personalDetails?.dob} ({formData.personalDetails?.age} Yrs)</p>
-                  <p className="text-slate-300"><strong>Gender / Status:</strong> {formData.personalDetails?.gender} / {formData.personalDetails?.maritalStatus}</p>
-                  <p className="text-slate-300"><strong>Address:</strong> {formData.contactDetails?.address}, {formData.contactDetails?.pincode}</p>
+                  <h5 className="font-bold text-sky-800 uppercase tracking-wider mb-2">Personal & Contact</h5>
+                  <p className="text-slate-700"><strong>DOB & Age:</strong> {formData.personalDetails?.dob} ({formData.personalDetails?.age} Yrs)</p>
+                  <p className="text-slate-700"><strong>Gender / Status:</strong> {formData.personalDetails?.gender} / {formData.personalDetails?.maritalStatus}</p>
+                  <p className="text-slate-700"><strong>Address:</strong> {formData.contactDetails?.address}, {formData.contactDetails?.pincode}</p>
                 </div>
 
                 <div>
-                  <h5 className="font-bold text-amber-400 uppercase tracking-wider mb-2">Financial & Notice</h5>
-                  <p className="text-slate-300"><strong>Total Experience:</strong> {formData.financialDetails?.totalExperienceYears} Years</p>
-                  <p className="text-slate-300"><strong>Notice Period:</strong> {formData.financialDetails?.noticePeriod}</p>
-                  <p className="text-slate-300"><strong>Expected Salary:</strong> ₹{formData.financialDetails?.expectedSalary} PA</p>
+                  <h5 className="font-bold text-sky-800 uppercase tracking-wider mb-2">Financial & Notice</h5>
+                  <p className="text-slate-700"><strong>Total Experience:</strong> {formData.financialDetails?.totalExperienceYears} Years</p>
+                  <p className="text-slate-700"><strong>Notice Period:</strong> {formData.financialDetails?.noticePeriod}</p>
+                  <p className="text-slate-700"><strong>Expected Salary:</strong> ₹{formData.financialDetails?.expectedSalary} PA</p>
                 </div>
               </div>
 
               {/* Education Summary */}
               <div>
-                <h5 className="font-bold text-amber-400 uppercase tracking-wider mb-2">Qualifications ({(formData.educationDetails || []).length})</h5>
-                <ul className="space-y-1 text-xs text-slate-300">
+                <h5 className="font-bold text-sky-800 uppercase tracking-wider mb-2">Qualifications ({(formData.educationDetails || []).length})</h5>
+                <ul className="space-y-1 text-xs text-slate-700">
                   {(formData.educationDetails || []).map((e, idx) => (
-                    <li key={idx} className="p-2 rounded bg-slate-950 border border-slate-800">
+                    <li key={idx} className="p-2.5 rounded-lg bg-white border border-sky-200">
                       <strong>{e.degree}</strong> – {e.institution} ({e.yearOfPassing}) • Marks: {e.percentage}
                     </li>
                   ))}
@@ -1625,10 +1625,10 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
               {/* Documents Summary */}
               <div>
-                <h5 className="font-bold text-amber-400 uppercase tracking-wider mb-2">Uploaded Attachments ({(formData.documents || []).length})</h5>
+                <h5 className="font-bold text-sky-800 uppercase tracking-wider mb-2">Uploaded Attachments ({(formData.documents || []).length})</h5>
                 <div className="flex flex-wrap gap-2">
                   {(formData.documents || []).map((d, idx) => (
-                    <span key={idx} className="px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-[11px] text-slate-300">
+                    <span key={idx} className="px-2.5 py-1 rounded-lg bg-white border border-sky-200 text-[11px] text-slate-700 font-medium">
                       📄 {d.type}: {d.name}
                     </span>
                   ))}
@@ -1648,8 +1648,8 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
           disabled={currentStep === 1}
           className={`flex items-center space-x-2 px-6 py-3 rounded-xl text-sm font-bold transition-all ${
             currentStep === 1 
-              ? 'opacity-40 cursor-not-allowed bg-slate-900 text-slate-600' 
-              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+              ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400 border border-slate-200' 
+              : 'bg-white hover:bg-sky-50 text-slate-700 border border-sky-200 shadow-sm'
           }`}
         >
           <ChevronLeft className="w-5 h-5" />
@@ -1659,7 +1659,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         {currentStep < 8 ? (
           <button
             onClick={handleNextStep}
-            className="flex items-center space-x-2 px-8 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 transition-all hover:scale-105"
+            className="flex items-center space-x-2 px-8 py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-sm shadow-lg shadow-sky-500/25 transition-all hover:scale-105"
           >
             <span>Next Step</span>
             <ChevronRight className="w-5 h-5" />
@@ -1667,7 +1667,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         ) : (
           <button
             onClick={() => setShowConfirmModal(true)}
-            className="flex items-center space-x-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-sm shadow-xl shadow-emerald-500/20 transition-all hover:scale-105"
+            className="flex items-center space-x-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-xl shadow-emerald-600/20 transition-all hover:scale-105"
           >
             <CheckCircle2 className="w-5 h-5" />
             <span>Confirm & Submit Application</span>
@@ -1677,31 +1677,31 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
       {/* CONFIRMATION MODAL */}
       {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-          <div className="glass-panel p-6 sm:p-8 rounded-3xl max-w-md w-full border border-amber-500/40 space-y-4 text-center">
-            <div className="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-400 text-amber-400 flex items-center justify-center mx-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fadeIn">
+          <div className="glass-panel p-6 sm:p-8 rounded-3xl max-w-md w-full border border-sky-300 space-y-4 text-center bg-white shadow-2xl">
+            <div className="w-14 h-14 rounded-full bg-sky-100 border border-sky-300 text-sky-600 flex items-center justify-center mx-auto">
               <Sparkles className="w-7 h-7" />
             </div>
 
-            <h3 className="text-xl font-heading font-extrabold text-white">
+            <h3 className="text-xl font-heading font-extrabold text-slate-900">
               Submit Application to {organizationId}?
             </h3>
 
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               Are you sure you want to submit your application for <strong>{formData.positionApplied}</strong>? A unique Application ID will be generated immediately for tracking.
             </p>
 
             <div className="pt-4 flex items-center justify-center space-x-3">
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold"
+                className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleFinalSubmit}
                 disabled={loading}
-                className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shadow-lg"
+                className="px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-extrabold shadow-lg shadow-sky-500/25"
               >
                 {loading ? 'Submitting...' : 'Yes, Submit Application'}
               </button>
