@@ -463,22 +463,9 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
             {/* Header: Rathinam Logo + Title + Passport Photo Box */}
             <div className="flex items-start justify-between border-b-2 border-black pb-3">
               <div className="flex-1 text-center pl-28">
-                {/* Rathinam Colored Logo */}
+                {/* Official Rathinam Group Logo */}
                 <div className="inline-flex flex-col items-center">
-                  <div className="flex items-center space-x-1 mb-1">
-                    <div className="w-4 h-4 rounded-full border-2 border-amber-500 flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                    </div>
-                    <div className="w-5 h-5 rounded-full border-2 border-emerald-500 -mt-2 flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                    </div>
-                    <div className="w-4 h-4 rounded-full border-2 border-sky-500 flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 rounded-full bg-sky-500" />
-                    </div>
-                  </div>
-                  <span className="font-extrabold text-lg tracking-widest text-black uppercase font-heading">
-                    RATHINAM
-                  </span>
+                  <img src="/rathinam_logo.png" alt="Rathinam Group Logo" className="h-16 w-auto object-contain mx-auto mb-1" />
                 </div>
                 <h1 className="text-lg font-bold text-black underline uppercase mt-1">
                   Candidate Personal Data Sheet
@@ -657,20 +644,7 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
             {/* Header: Rathinam Logo Page 2 */}
             <div className="text-center border-b-2 border-black pb-3">
               <div className="inline-flex flex-col items-center">
-                <div className="flex items-center space-x-1 mb-1">
-                  <div className="w-4 h-4 rounded-full border-2 border-amber-500 flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                  </div>
-                  <div className="w-5 h-5 rounded-full border-2 border-emerald-500 -mt-2 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                  </div>
-                  <div className="w-4 h-4 rounded-full border-2 border-sky-500 flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-sky-500" />
-                  </div>
-                </div>
-                <span className="font-extrabold text-base tracking-widest text-black uppercase font-heading">
-                  RATHINAM
-                </span>
+                <img src="/rathinam_logo.png" alt="Rathinam Group Logo" className="h-12 w-auto object-contain mx-auto mb-1" />
               </div>
             </div>
 
