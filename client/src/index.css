@@ -4,21 +4,22 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 min-h-screen font-sans;
+    @apply bg-slate-50 text-slate-900 min-h-screen font-sans antialiased;
     background-image: 
-      radial-gradient(at 0% 0%, rgba(10, 37, 64, 0.8) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.15) 0px, transparent 50%),
-      radial-gradient(at 50% 50%, rgba(0, 128, 128, 0.12) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(255, 107, 0, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(3, 86, 255, 0.05) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(0, 174, 120, 0.04) 0px, transparent 50%);
     background-attachment: fixed;
   }
 }
 
-/* Glassmorphism Cards */
+/* Glassmorphism Cards (Stitch Light Theme) */
 .glass-panel {
-  background: rgba(15, 45, 74, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 191, 176, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.04);
 }
 
 .glass-panel-hover {
@@ -26,42 +27,42 @@
 }
 
 .glass-panel-hover:hover {
-  background: rgba(15, 45, 74, 0.85);
-  border-color: rgba(212, 175, 55, 0.4);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(212, 175, 55, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 107, 0, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(255, 107, 0, 0.12), 0 8px 24px 0 rgba(15, 23, 42, 0.06);
 }
 
 .glass-input {
-  background: rgba(6, 23, 39, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #F8FAFC;
+  background: #ffffff;
+  border: 1px solid #e2bfb0;
+  color: #121c2a;
   transition: all 0.2s ease;
 }
 
 .glass-input:focus {
   outline: none;
-  border-color: #D4AF37;
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+  border-color: #ff6b00;
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.15);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(6, 23, 39, 0.5);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  background: #e2bfb0;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.5);
+  background: #ff6b00;
 }
 
 /* Print CSS for Resume PDF Export */

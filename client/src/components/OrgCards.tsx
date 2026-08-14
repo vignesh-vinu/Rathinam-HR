@@ -47,15 +47,15 @@ export const OrgCards: React.FC<OrgCardsProps> = ({ onSelectOrg }) => {
   ];
 
   return (
-    <div className="py-12">
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="px-3.5 py-1 text-xs font-bold uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-full">
+    <div className="py-8">
+      <div className="text-center max-w-3xl mx-auto mb-10">
+        <span className="px-3.5 py-1 text-xs font-bold uppercase tracking-widest bg-orange-50 text-orange-700 border border-orange-200 rounded-full">
           Step 1: Select Institution
         </span>
-        <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-white mt-4 tracking-tight">
+        <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-slate-900 mt-3 tracking-tight">
           Choose Your Target Organization
         </h2>
-        <p className="text-slate-400 text-sm sm:text-base mt-2">
+        <p className="text-slate-600 text-sm sm:text-base mt-2 font-normal">
           Select the Rathinam institution where you wish to apply. Your selection will automatically customize the application routing.
         </p>
       </div>
@@ -67,36 +67,36 @@ export const OrgCards: React.FC<OrgCardsProps> = ({ onSelectOrg }) => {
             <div
               key={org.id}
               onClick={() => onSelectOrg(org.id)}
-              className={`group glass-panel rounded-2xl p-7 relative cursor-pointer border border-slate-800 transition-all duration-300 ${org.accentGlow} hover:-translate-y-2 hover:shadow-2xl flex flex-col justify-between`}
+              className="group glass-panel rounded-2xl p-8 relative cursor-pointer border border-slate-200/80 bg-white/80 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl flex flex-col justify-between"
             >
               <div>
                 {/* Header Badge & Icon */}
                 <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-700/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:border-amber-400/50 shadow-inner">
-                    <IconComp className="w-7 h-7 text-amber-400" />
+                  <div className="w-14 h-14 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                    <IconComp className="w-7 h-7 text-orange-600" />
                   </div>
-                  <span className={`px-3 py-1 text-xs font-extrabold tracking-wider border rounded-full ${org.badgeColor}`}>
+                  <span className="px-3 py-1 text-xs font-extrabold tracking-wider border rounded-full bg-slate-100 text-slate-700 border-slate-200">
                     {org.name}
                   </span>
                 </div>
 
                 {/* Org Titles */}
-                <h3 className="text-xl font-heading font-extrabold text-white group-hover:text-amber-300 transition-colors">
+                <h3 className="text-xl font-heading font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors">
                   {org.fullName}
                 </h3>
-                <p className="text-xs font-semibold text-amber-400/90 mt-1 mb-3">
+                <p className="text-xs font-semibold text-orange-600 mt-1 mb-3">
                   {org.subtitle}
                 </p>
-                <p className="text-slate-300 text-xs leading-relaxed mb-6">
+                <p className="text-slate-600 text-xs leading-relaxed mb-6 font-normal">
                   {org.description}
                 </p>
               </div>
 
               <div>
                 {/* Micro Stats */}
-                <div className="py-3 px-3.5 rounded-xl bg-slate-900/80 border border-slate-800 mb-6 flex items-center justify-between text-[11px] text-slate-400">
+                <div className="py-3 px-3.5 rounded-xl bg-slate-50 border border-slate-200/80 mb-6 flex items-center justify-between text-[11px] text-slate-600">
                   <span className="flex items-center space-x-1.5 font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                     <span>{org.stats}</span>
                   </span>
                 </div>
@@ -107,7 +107,7 @@ export const OrgCards: React.FC<OrgCardsProps> = ({ onSelectOrg }) => {
                     e.stopPropagation();
                     onSelectOrg(org.id);
                   }}
-                  className={`w-full py-3 px-5 rounded-xl font-bold text-sm text-white ${org.btnBg} flex items-center justify-center space-x-2 shadow-lg transition-all group-hover:shadow-amber-500/20`}
+                  className="w-full py-3.5 px-5 rounded-xl font-bold text-sm text-white bg-orange-600 hover:bg-orange-500 flex items-center justify-center space-x-2 shadow-md shadow-orange-500/20 transition-all group-hover:shadow-lg"
                 >
                   <span>Apply to {org.name}</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

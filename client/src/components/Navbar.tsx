@@ -24,7 +24,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
   }, [user, selectedOrgFilter]);
 
   return (
-    <nav className="sticky top-0 z-50 glass-panel border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
@@ -33,21 +33,21 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
             className="flex items-center space-x-3 cursor-pointer group"
             onClick={() => onNavigate('landing')}
           >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-600 p-0.5 shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform duration-300">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <GraduationCap className="w-7 h-7 text-amber-400" />
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-500 p-0.5 shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform duration-300">
+              <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
+                <GraduationCap className="w-6 h-6 text-orange-600" />
               </div>
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-heading text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
-                  Rathinam<span className="text-amber-400">HR</span>
+                <span className="font-heading text-xl font-extrabold tracking-tight text-slate-900">
+                  Rathinam<span className="text-orange-600">HR</span>
                 </span>
-                <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-full">
-                  Enterprise
+                <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-orange-50 text-orange-700 border border-orange-200 rounded-full">
+                  Portal
                 </span>
               </div>
-              <p className="text-xs text-slate-400 font-medium tracking-wide">
+              <p className="text-xs text-slate-500 font-medium tracking-wide">
                 Smart Recruitment & Applicant System
               </p>
             </div>
@@ -57,10 +57,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
           <div className="hidden md:flex items-center space-x-1">
             <button
               onClick={() => onNavigate('landing')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                 currentView === 'landing' 
-                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' 
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                  ? 'bg-orange-50 text-orange-600 font-bold border border-orange-200' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Home
@@ -68,10 +68,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
 
             <button
               onClick={() => onNavigate('apply-selector')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                 currentView === 'apply-selector' || currentView === 'apply-form'
-                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' 
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                  ? 'bg-orange-50 text-orange-600 font-bold border border-orange-200' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Careers / Apply
@@ -79,10 +79,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
 
             <button
               onClick={() => onNavigate('track')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                 currentView === 'track' 
-                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' 
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                  ? 'bg-orange-50 text-orange-600 font-bold border border-orange-200' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Track Application
@@ -92,45 +92,45 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
           {/* Admin User / Login Action */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <div className="flex items-center space-x-3 pl-4 border-l border-slate-800">
+              <div className="flex items-center space-x-3 pl-4 border-l border-slate-200">
                 
                 {/* HR Dashboard Navigation */}
                 <button
                   onClick={() => onNavigate('admin-dashboard')}
-                  className="flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold border border-slate-700 transition-colors"
+                  className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-orange-600 hover:bg-orange-500 text-white text-sm font-bold shadow-md shadow-orange-500/20 transition-all"
                 >
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <ShieldCheck className="w-4 h-4" />
                   <span>HR Dashboard</span>
                 </button>
 
                 {/* Notifications Bell */}
                 <button
                   onClick={onOpenNotifications}
-                  className="relative p-2.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-amber-400 transition-colors border border-slate-700"
+                  className="relative p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200"
                   title="Notifications"
                 >
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-amber-500 text-slate-950 font-extrabold text-[11px] rounded-full flex items-center justify-center animate-pulse shadow-md shadow-amber-500/30">
+                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-500 text-white font-extrabold text-[11px] rounded-full flex items-center justify-center shadow-md">
                       {unreadCount}
                     </span>
                   )}
                 </button>
 
                 {/* User Avatar Dropdown */}
-                <div className="flex items-center space-x-3 bg-slate-900/90 py-1.5 px-3 rounded-xl border border-slate-800">
+                <div className="flex items-center space-x-3 bg-slate-100 py-1.5 px-3 rounded-xl border border-slate-200">
                   <img 
                     src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100'} 
                     alt={user.name}
-                    className="w-8 h-8 rounded-full object-cover border border-amber-400/50"
+                    className="w-8 h-8 rounded-full object-cover border border-orange-400"
                   />
                   <div className="text-left leading-tight">
-                    <p className="text-xs font-bold text-slate-200 truncate max-w-[120px]">{user.name}</p>
-                    <p className="text-[10px] text-amber-400 font-semibold">{user.role.replace('_', ' ')}</p>
+                    <p className="text-xs font-bold text-slate-800 truncate max-w-[120px]">{user.name}</p>
+                    <p className="text-[10px] text-orange-600 font-semibold">{user.role.replace('_', ' ')}</p>
                   </div>
                   <button 
                     onClick={logout}
-                    className="text-slate-400 hover:text-rose-400 p-1 rounded-md transition-colors"
+                    className="text-slate-400 hover:text-rose-600 p-1 rounded-md transition-colors"
                     title="Logout"
                   >
                     <LogOut className="w-4 h-4" />
@@ -141,7 +141,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
             ) : (
               <button
                 onClick={() => onNavigate('admin-login')}
-                className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm shadow-md shadow-orange-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <ShieldCheck className="w-4 h-4" />
                 <span>HR Admin Login</span>
