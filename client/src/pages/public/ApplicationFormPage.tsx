@@ -1548,72 +1548,383 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               <span>Step 8: Review Candidate Profile Before Final Submit</span>
             </h3>
 
-            <div className="p-6 rounded-2xl bg-sky-50/60 border border-sky-200 space-y-6 shadow-sm">
+            {/* OFFICIAL RATHINAM Candidate Personal Data Sheet PREVIEW */}
+            <div className="bg-white text-black p-6 sm:p-10 font-sans shadow-xl rounded-2xl border border-sky-300 max-w-4xl mx-auto space-y-8">
               
-              {/* Summary Card Header */}
-              <div className="flex flex-col sm:flex-row items-center justify-between pb-4 border-b border-sky-200 gap-4">
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 rounded-full bg-white border-2 border-sky-400 flex items-center justify-center overflow-hidden shadow-sm">
-                    {formData.personalDetails?.photoUrl ? (
-                      <img src={formData.personalDetails.photoUrl} alt="Photo" className="w-full h-full object-cover" />
-                    ) : (
-                      <User className="w-8 h-8 text-sky-600" />
-                    )}
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-heading font-bold text-slate-900">
-                      {formData.personalDetails?.firstName} {formData.personalDetails?.middleName} {formData.personalDetails?.lastName}
-                    </h4>
-                    <p className="text-xs text-sky-700 font-semibold mt-0.5">
-                      {formData.positionApplied} • ({organizationId})
-                    </p>
-                    <p className="text-xs text-slate-500">{formData.contactDetails?.email} • {formData.contactDetails?.mobile}</p>
-                  </div>
-                </div>
-                <span className="px-3 py-1 text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full">
-                  Ready to Submit
+              {/* Review Badge Banner */}
+              <div className="bg-sky-50 border border-sky-200 p-3 rounded-xl flex items-center justify-between no-print">
+                <span className="text-xs font-bold text-sky-800 flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-sky-600" />
+                  <span>Official Application Paper Form Preview (Verify your details before final submission)</span>
+                </span>
+                <span className="text-[11px] font-bold bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                  Step 8 of 8
                 </span>
               </div>
 
-              {/* Grid Summaries */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-                <div>
-                  <h5 className="font-bold text-sky-800 uppercase tracking-wider mb-2">Personal & Contact</h5>
-                  <p className="text-slate-700"><strong>DOB & Age:</strong> {formData.personalDetails?.dob} ({formData.personalDetails?.age} Yrs)</p>
-                  <p className="text-slate-700"><strong>Gender / Status:</strong> {formData.personalDetails?.gender} / {formData.personalDetails?.maritalStatus}</p>
-                  <p className="text-slate-700"><strong>Address:</strong> {formData.contactDetails?.address}, {formData.contactDetails?.pincode}</p>
+              {/* ==================== PAGE 1 PREVIEW ==================== */}
+              <div className="space-y-4 print-page">
+                
+                {/* Header: Rathinam Logo + Title + Passport Photo Box */}
+                <div className="flex items-start justify-between border-b-2 border-black pb-3">
+                  <div className="flex-1 text-center pl-24 sm:pl-28">
+                    {/* Rathinam Colored Logo */}
+                    <div className="inline-flex flex-col items-center">
+                      <div className="flex items-center space-x-1 mb-1">
+                        <div className="w-4 h-4 rounded-full border-2 border-amber-500 flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        </div>
+                        <div className="w-5 h-5 rounded-full border-2 border-emerald-500 -mt-2 flex items-center justify-center">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        </div>
+                        <div className="w-4 h-4 rounded-full border-2 border-sky-500 flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+                        </div>
+                      </div>
+                      <span className="font-extrabold text-lg tracking-widest text-black uppercase font-heading">
+                        RATHINAM
+                      </span>
+                    </div>
+                    <h1 className="text-base sm:text-lg font-bold text-black underline uppercase mt-1">
+                      Candidate Personal Data Sheet
+                    </h1>
+                  </div>
+
+                  {/* Passport Size Photo Box on Top Right */}
+                  <div className="w-[105px] h-[130px] border-2 border-black p-0.5 flex flex-col items-center justify-center bg-slate-50 text-center flex-shrink-0 ml-2 sm:ml-4">
+                    {formData.personalDetails?.photoUrl ? (
+                      <img src={formData.personalDetails.photoUrl} alt="Candidate Photo" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="text-[10px] font-bold text-slate-500 uppercase leading-tight px-1">
+                        Affix Candidate Passport Size Photo
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div>
-                  <h5 className="font-bold text-sky-800 uppercase tracking-wider mb-2">Financial & Notice</h5>
-                  <p className="text-slate-700"><strong>Total Experience:</strong> {formData.financialDetails?.totalExperienceYears} Years</p>
-                  <p className="text-slate-700"><strong>Notice Period:</strong> {formData.financialDetails?.noticePeriod}</p>
-                  <p className="text-slate-700"><strong>Expected Salary:</strong> ₹{formData.financialDetails?.expectedSalary} PA</p>
+                {/* Date / Time / Source Box */}
+                <div className="border border-black grid grid-cols-3 text-xs divide-x divide-black font-semibold">
+                  <div className="p-2">Date : <span className="font-normal">{new Date().toLocaleDateString()}</span></div>
+                  <div className="p-2">Time : <span className="font-normal">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></div>
+                  <div className="p-2">Source : <span className="font-normal">Online Application</span></div>
+                </div>
+
+                {/* Personal Details Form Lines */}
+                <div className="space-y-2.5 text-xs font-semibold leading-relaxed pt-1">
+                  <div className="border-b border-black/30 pb-1">
+                    <span>Position Applied for : </span>
+                    <span className="font-normal underline underline-offset-4">{formData.positionApplied || 'N/A'}</span>
+                  </div>
+
+                  <div className="border-b border-black/30 pb-1 flex items-baseline justify-between flex-wrap gap-2">
+                    <span>Name (In Block Letters) : <span className="font-bold uppercase text-sm">{formData.personalDetails?.firstName || ''}</span> <span className="text-[10px] font-normal text-slate-500">(First Name)</span></span>
+                    <span><span className="font-bold uppercase text-sm">{formData.personalDetails?.middleName || '-'}</span> <span className="text-[10px] font-normal text-slate-500">(Middle Name)</span></span>
+                    <span><span className="font-bold uppercase text-sm">{formData.personalDetails?.lastName || ''}</span> <span className="text-[10px] font-normal text-slate-500">(Last Name)</span></span>
+                  </div>
+
+                  <div className="border-b border-black/30 pb-1">
+                    <span>Contact Address : </span>
+                    <span className="font-normal">{formData.contactDetails?.address}, {formData.contactDetails?.city}, {formData.contactDetails?.state}</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 border-b border-black/30 pb-1">
+                    <div>Pin code : <span className="font-normal">{formData.contactDetails?.pincode}</span></div>
+                    <div>e – Mail id : <span className="font-normal">{formData.contactDetails?.email}</span></div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 border-b border-black/30 pb-1">
+                    <div>Phone : <span className="font-normal">{formData.contactDetails?.phone || 'N/A'}</span></div>
+                    <div>Mobile : <span className="font-normal">{formData.contactDetails?.mobile}</span></div>
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-2 border-b border-black/30 pb-1">
+                    <div>Date of Birth: <span className="font-normal">{formData.personalDetails?.dob}</span></div>
+                    <div>Age : <span className="font-normal">{formData.personalDetails?.age} Yrs</span></div>
+                    <div>Gender : <span className="font-normal">{formData.personalDetails?.gender}</span></div>
+                    <div>Marital Status : <span className="font-normal">{formData.personalDetails?.maritalStatus}</span></div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 border-b border-black/30 pb-1">
+                    <div>Current Gross (Per Annum) : <span className="font-normal">₹{formData.financialDetails?.currentSalary || 'N/A'}</span></div>
+                    <div>Expected Gross (Per Annum) : <span className="font-normal">₹{formData.financialDetails?.expectedSalary || 'N/A'}</span></div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 border-b border-black/30 pb-1">
+                    <div>Current Company Notice Period : <span className="font-normal">{formData.financialDetails?.noticePeriod || 'Immediate'}</span></div>
+                    <div>Total years of Experience : <span className="font-normal">{formData.financialDetails?.totalExperienceYears || '0'} Years</span></div>
+                  </div>
+                </div>
+
+                {/* Educational Qualifications Table */}
+                <div className="pt-2 space-y-1">
+                  <h3 className="text-xs font-bold text-black uppercase">Educational Qualifications:</h3>
+                  <table className="w-full text-center text-[11px] border-collapse border border-black">
+                    <thead>
+                      <tr className="border-b border-black bg-slate-100 font-bold">
+                        <th className="border-r border-black p-1.5">Degree (from latest)</th>
+                        <th className="border-r border-black p-1.5">Division</th>
+                        <th className="border-r border-black p-1.5">College</th>
+                        <th className="border-r border-black p-1.5">Name of Board/University</th>
+                        <th className="border-r border-black p-1.5">Credit Points / % of Marks</th>
+                        <th className="border-r border-black p-1.5">Major Subjects</th>
+                        <th className="p-1.5">Year of Passing</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-black">
+                      {(formData.educationDetails || []).map((edu, idx) => (
+                        <tr key={idx}>
+                          <td className="border-r border-black p-1.5 font-bold">{edu.degree}</td>
+                          <td className="border-r border-black p-1.5">{edu.division}</td>
+                          <td className="border-r border-black p-1.5">{edu.institution}</td>
+                          <td className="border-r border-black p-1.5">{edu.boardUniversity}</td>
+                          <td className="border-r border-black p-1.5 font-semibold">{edu.percentage}</td>
+                          <td className="border-r border-black p-1.5">{edu.majorSubjects}</td>
+                          <td className="p-1.5 font-mono">{edu.yearOfPassing}</td>
+                        </tr>
+                      ))}
+                      {Array.from({ length: Math.max(0, 3 - (formData.educationDetails?.length || 0)) }).map((_, i) => (
+                        <tr key={`empty-edu-${i}`}>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="p-2">&nbsp;</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Work Experience Table */}
+                <div className="pt-2 space-y-1">
+                  <h3 className="text-xs font-bold text-black uppercase">Work Experience (Starting from present Organization)</h3>
+                  <table className="w-full text-center text-[11px] border-collapse border border-black">
+                    <thead>
+                      <tr className="border-b border-black bg-slate-100 font-bold">
+                        <th className="border-r border-black p-1" rowSpan={2}>Name of Organization</th>
+                        <th className="border-r border-black p-1" rowSpan={2}>Designation</th>
+                        <th className="border-r border-black p-1" colSpan={2}>Period</th>
+                        <th className="border-r border-black p-1" rowSpan={2}>Gross Salary PM</th>
+                        <th className="border-r border-black p-1" rowSpan={2}>Annual CTC</th>
+                        <th className="p-1" rowSpan={2}>Reason for Leaving</th>
+                      </tr>
+                      <tr className="border-b border-black bg-slate-100 font-bold">
+                        <th className="border-r border-black p-1 text-[10px]">From</th>
+                        <th className="border-r border-black p-1 text-[10px]">To</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-black">
+                      {(formData.experienceDetails || []).map((exp, idx) => (
+                        <tr key={idx}>
+                          <td className="border-r border-black p-1.5 font-bold">{exp.organization}</td>
+                          <td className="border-r border-black p-1.5">{exp.designation}</td>
+                          <td className="border-r border-black p-1 text-[10px] font-mono">{exp.periodFrom}</td>
+                          <td className="border-r border-black p-1 text-[10px] font-mono">{exp.periodTo}</td>
+                          <td className="border-r border-black p-1.5 font-mono">{exp.ctcPerMonth ? `₹${exp.ctcPerMonth}` : '-'}</td>
+                          <td className="border-r border-black p-1.5 font-mono">₹{exp.grossAnnualSalary}</td>
+                          <td className="p-1.5">{exp.reasonForLeaving}</td>
+                        </tr>
+                      ))}
+                      {Array.from({ length: Math.max(0, 3 - (formData.experienceDetails?.length || 0)) }).map((_, i) => (
+                        <tr key={`empty-exp-${i}`}>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="p-2">&nbsp;</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="border-b border-black/30 pb-1 text-xs font-semibold pt-1">
+                  Career Break If any: <span className="font-normal">{formData.experienceDetails?.[0]?.careerBreak || 'None'}</span>
+                </div>
+
+                {/* Page 1 Footer */}
+                <div className="pt-3 text-[10px] text-slate-600 font-semibold flex justify-between border-t border-black/20">
+                  <span>Doc Ref: RGI/HR/FR 001 Rev:02 - Date of Issue: 01-06-2025</span>
+                  <span>Page 1 of 2</span>
                 </div>
               </div>
 
-              {/* Education Summary */}
-              <div>
-                <h5 className="font-bold text-sky-800 uppercase tracking-wider mb-2">Qualifications ({(formData.educationDetails || []).length})</h5>
-                <ul className="space-y-1 text-xs text-slate-700">
-                  {(formData.educationDetails || []).map((e, idx) => (
-                    <li key={idx} className="p-2.5 rounded-lg bg-white border border-sky-200">
-                      <strong>{e.degree}</strong> – {e.institution} ({e.yearOfPassing}) • Marks: {e.percentage}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {/* ==================== PAGE BREAK ==================== */}
+              <div className="page-break my-8 border-b-2 border-dashed border-slate-300 no-print" />
 
-              {/* Documents Summary */}
-              <div>
-                <h5 className="font-bold text-sky-800 uppercase tracking-wider mb-2">Uploaded Attachments ({(formData.documents || []).length})</h5>
-                <div className="flex flex-wrap gap-2">
-                  {(formData.documents || []).map((d, idx) => (
-                    <span key={idx} className="px-2.5 py-1 rounded-lg bg-white border border-sky-200 text-[11px] text-slate-700 font-medium">
-                      📄 {d.type}: {d.name}
+              {/* ==================== PAGE 2 PREVIEW ==================== */}
+              <div className="space-y-4 print-page pt-4">
+                
+                {/* Header: Rathinam Logo Page 2 */}
+                <div className="text-center border-b-2 border-black pb-3">
+                  <div className="inline-flex flex-col items-center">
+                    <div className="flex items-center space-x-1 mb-1">
+                      <div className="w-4 h-4 rounded-full border-2 border-amber-500 flex items-center justify-center">
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      </div>
+                      <div className="w-5 h-5 rounded-full border-2 border-emerald-500 -mt-2 flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                      </div>
+                      <div className="w-4 h-4 rounded-full border-2 border-sky-500 flex items-center justify-center">
+                        <div className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+                      </div>
+                    </div>
+                    <span className="font-extrabold text-base tracking-widest text-black uppercase font-heading">
+                      RATHINAM
                     </span>
-                  ))}
+                  </div>
                 </div>
+
+                {/* Certifications */}
+                <div className="border-b border-black/30 pb-1 text-xs font-semibold">
+                  Certifications if Any? (E.g.: Oracle, Java, Network etc. ) : <span className="font-normal">{formData.certifications || 'None listed'}</span>
+                </div>
+
+                {/* Languages Known Grid */}
+                <div className="space-y-1">
+                  <h3 className="text-xs font-bold text-black uppercase">Language Known:</h3>
+                  <table className="w-full text-center text-[11px] border-collapse border border-black">
+                    <thead>
+                      <tr className="border-b border-black bg-slate-100 font-bold">
+                        <th className="border-r border-black p-1">S. No.</th>
+                        <th className="border-r border-black p-1">Language</th>
+                        <th className="border-r border-black p-1 text-[10px]">R &nbsp; W &nbsp; S &nbsp; U</th>
+                        <th className="border-r border-black p-1">S. No.</th>
+                        <th className="border-r border-black p-1">Language</th>
+                        <th className="p-1 text-[10px]">R &nbsp; W &nbsp; S &nbsp; U</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-black">
+                      {(formData.languagesKnown || []).map((lang, idx) => (
+                        <tr key={idx}>
+                          <td className="border-r border-black p-1">{idx + 1}</td>
+                          <td className="border-r border-black p-1 font-semibold">{lang.language}</td>
+                          <td className="border-r border-black p-1 font-mono text-[10px]">
+                            {lang.read ? '☑' : '☐'} &nbsp; {lang.write ? '☑' : '☐'} &nbsp; {lang.speak ? '☑' : '☐'} &nbsp; {lang.understand ? '☑' : '☐'}
+                          </td>
+                          <td className="border-r border-black p-1">-</td>
+                          <td className="border-r border-black p-1">-</td>
+                          <td className="p-1 font-mono text-[10px]">-</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Family Details Table */}
+                <div className="space-y-1">
+                  <h3 className="text-xs font-bold text-black uppercase">*Family Details:</h3>
+                  <table className="w-full text-center text-[11px] border-collapse border border-black">
+                    <thead>
+                      <tr className="border-b border-black bg-slate-100 font-bold">
+                        <th className="border-r border-black p-1">S. No.</th>
+                        <th className="border-r border-black p-1">Name</th>
+                        <th className="border-r border-black p-1">Age</th>
+                        <th className="border-r border-black p-1">Relationship</th>
+                        <th className="border-r border-black p-1">Occupation</th>
+                        <th className="border-r border-black p-1">Dependent / Not</th>
+                        <th className="p-1">Contact No</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-black">
+                      {(formData.familyDetails || []).map((fam, idx) => (
+                        <tr key={idx}>
+                          <td className="border-r border-black p-1">{idx + 1}</td>
+                          <td className="border-r border-black p-1 font-semibold">{fam.name}</td>
+                          <td className="border-r border-black p-1">{fam.age}</td>
+                          <td className="border-r border-black p-1">{fam.relationship}</td>
+                          <td className="border-r border-black p-1">{fam.occupation}</td>
+                          <td className="border-r border-black p-1">{fam.dependent ? 'Dependent' : 'Not Dependent'}</td>
+                          <td className="p-1 font-mono">{fam.contactNo}</td>
+                        </tr>
+                      ))}
+                      {Array.from({ length: Math.max(0, 3 - (formData.familyDetails?.length || 0)) }).map((_, i) => (
+                        <tr key={`empty-fam-${i}`}>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="p-2">&nbsp;</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Questionnaire */}
+                <div className="space-y-1.5 text-xs font-semibold">
+                  <div className="border-b border-black/30 pb-1">
+                    Are you willing to work on Sundays? Yes / No : <span className="font-normal">{formData.additionalInfo?.workSundays || 'Yes'}</span>
+                  </div>
+                  <div className="border-b border-black/30 pb-1">
+                    Joining time required: <span className="font-normal">{formData.additionalInfo?.joiningTimeRequired || '30 Days'}</span>
+                  </div>
+                  <div className="border-b border-black/30 pb-1">
+                    Is there any litigation pending against you filed by (a) Any relative (b) Otherwise? If Yes, Please provide details: <span className="font-normal">{formData.additionalInfo?.litigationDetails || 'None'}</span>
+                  </div>
+                </div>
+
+                {/* References Table */}
+                <div className="space-y-1">
+                  <h3 className="text-xs font-bold text-black uppercase">References (From your current Organization):</h3>
+                  <table className="w-full text-center text-[11px] border-collapse border border-black">
+                    <thead>
+                      <tr className="border-b border-black bg-slate-100 font-bold">
+                        <th className="border-r border-black p-1">S. No.</th>
+                        <th className="border-r border-black p-1">Name</th>
+                        <th className="border-r border-black p-1">Designation</th>
+                        <th className="border-r border-black p-1">Mobile</th>
+                        <th className="p-1">Phone</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-black">
+                      {(formData.references || []).map((ref, idx) => (
+                        <tr key={idx}>
+                          <td className="border-r border-black p-1">{idx + 1}</td>
+                          <td className="border-r border-black p-1 font-semibold">{ref.name}</td>
+                          <td className="border-r border-black p-1">{ref.designation}</td>
+                          <td className="border-r border-black p-1 font-mono">{ref.mobile}</td>
+                          <td className="p-1 font-mono">{ref.phone || 'N/A'}</td>
+                        </tr>
+                      ))}
+                      {Array.from({ length: Math.max(0, 2 - (formData.references?.length || 0)) }).map((_, i) => (
+                        <tr key={`empty-ref-${i}`}>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="border-r border-black p-2">&nbsp;</td>
+                          <td className="p-2">&nbsp;</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Solemn Declaration */}
+                <div className="pt-4 space-y-6">
+                  <p className="text-xs font-bold text-black border-b border-black pb-2">
+                    I hereby solemnly declare that all the details furnished above are true to the best of my knowledge
+                  </p>
+                  
+                  <div className="grid grid-cols-3 text-xs font-bold pt-4 text-center">
+                    <div>Date : <span className="font-normal underline">{new Date().toISOString().split('T')[0]}</span></div>
+                    <div>Place : <span className="font-normal underline">Coimbatore</span></div>
+                    <div>Signature : <span className="font-normal italic">_________________</span></div>
+                  </div>
+                </div>
+
+                {/* Page 2 Footer */}
+                <div className="pt-4 text-[10px] text-slate-600 font-semibold flex justify-between border-t border-black/20">
+                  <span>Doc Ref: RGI/HR/FR 001 Rev:02 - Date of Issue: 01-06-2025</span>
+                  <span>Page 2 of 2</span>
+                </div>
+
               </div>
 
             </div>
