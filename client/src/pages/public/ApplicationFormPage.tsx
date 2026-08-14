@@ -673,41 +673,20 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
             </div>
 
-            {/* Nationality & Category */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Nationality
-                </label>
-                <input
-                  type="text"
-                  value={formData.personalDetails?.nationality || 'Indian'}
-                  onChange={e => setFormData({
-                    ...formData,
-                    personalDetails: { ...formData.personalDetails!, nationality: e.target.value }
-                  })}
-                  className="w-full px-4 py-2.5 rounded-xl glass-input text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Category
-                </label>
-                <select
-                  value={formData.personalDetails?.category || 'General'}
-                  onChange={e => setFormData({
-                    ...formData,
-                    personalDetails: { ...formData.personalDetails!, category: e.target.value }
-                  })}
-                  className="w-full px-4 py-2.5 rounded-xl glass-input text-sm"
-                >
-                  <option value="General" className="bg-white text-slate-900">General / OC</option>
-                  <option value="OBC" className="bg-white text-slate-900">OBC / BC / MBC</option>
-                  <option value="SC" className="bg-white text-slate-900">SC</option>
-                  <option value="ST" className="bg-white text-slate-900">ST</option>
-                </select>
-              </div>
+            {/* Nationality */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Nationality
+              </label>
+              <input
+                type="text"
+                value={formData.personalDetails?.nationality || 'Indian'}
+                onChange={e => setFormData({
+                  ...formData,
+                  personalDetails: { ...formData.personalDetails!, nationality: e.target.value }
+                })}
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-sm"
+              />
             </div>
 
           </div>
