@@ -49,7 +49,7 @@ export const OrgCards: React.FC<OrgCardsProps> = ({ onSelectOrg }) => {
   return (
     <div className="py-8">
       <div className="text-center max-w-3xl mx-auto mb-10">
-        <span className="px-3.5 py-1 text-xs font-bold uppercase tracking-widest bg-orange-50 text-orange-700 border border-orange-200 rounded-full">
+        <span className="px-3.5 py-1 text-xs font-bold uppercase tracking-widest bg-sky-50 text-sky-700 border border-sky-200 rounded-full">
           Step 1: Select Institution
         </span>
         <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-slate-900 mt-3 tracking-tight">
@@ -67,24 +67,24 @@ export const OrgCards: React.FC<OrgCardsProps> = ({ onSelectOrg }) => {
             <div
               key={org.id}
               onClick={() => onSelectOrg(org.id)}
-              className="group glass-panel rounded-2xl p-8 relative cursor-pointer border border-slate-200/80 bg-white/80 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl flex flex-col justify-between"
+              className="group glass-panel rounded-2xl p-8 relative cursor-pointer border border-sky-100 bg-white/90 transition-all duration-300 hover:-translate-y-2 hover:border-sky-400 hover:shadow-xl flex flex-col justify-between"
             >
               <div>
                 {/* Header Badge & Icon */}
                 <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                    <IconComp className="w-7 h-7 text-orange-600" />
+                  <div className="w-14 h-14 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                    <IconComp className="w-7 h-7 text-sky-600" />
                   </div>
-                  <span className="px-3 py-1 text-xs font-extrabold tracking-wider border rounded-full bg-slate-100 text-slate-700 border-slate-200">
+                  <span className="px-3 py-1 text-xs font-extrabold tracking-wider border rounded-full bg-sky-50 text-sky-700 border-sky-200">
                     {org.name}
                   </span>
                 </div>
 
                 {/* Org Titles */}
-                <h3 className="text-xl font-heading font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors">
+                <h3 className="text-xl font-heading font-extrabold text-slate-900 group-hover:text-sky-600 transition-colors">
                   {org.fullName}
                 </h3>
-                <p className="text-xs font-semibold text-orange-600 mt-1 mb-3">
+                <p className="text-xs font-semibold text-sky-600 mt-1 mb-3">
                   {org.subtitle}
                 </p>
                 <p className="text-slate-600 text-xs leading-relaxed mb-6 font-normal">
@@ -94,7 +94,7 @@ export const OrgCards: React.FC<OrgCardsProps> = ({ onSelectOrg }) => {
 
               <div>
                 {/* Micro Stats */}
-                <div className="py-3 px-3.5 rounded-xl bg-slate-50 border border-slate-200/80 mb-6 flex items-center justify-between text-[11px] text-slate-600">
+                <div className="py-3 px-3.5 rounded-xl bg-sky-50/50 border border-sky-100 mb-6 flex items-center justify-between text-[11px] text-slate-600">
                   <span className="flex items-center space-x-1.5 font-medium">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                     <span>{org.stats}</span>
@@ -107,7 +107,7 @@ export const OrgCards: React.FC<OrgCardsProps> = ({ onSelectOrg }) => {
                     e.stopPropagation();
                     onSelectOrg(org.id);
                   }}
-                  className="w-full py-3.5 px-5 rounded-xl font-bold text-sm text-white bg-orange-600 hover:bg-orange-500 flex items-center justify-center space-x-2 shadow-md shadow-orange-500/20 transition-all group-hover:shadow-lg"
+                  className="w-full py-3.5 px-5 rounded-xl font-bold text-sm text-white bg-sky-600 hover:bg-sky-500 flex items-center justify-center space-x-2 shadow-md shadow-sky-500/25 transition-all group-hover:shadow-lg"
                 >
                   <span>Apply to {org.name}</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

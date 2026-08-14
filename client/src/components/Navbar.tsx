@@ -24,7 +24,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
   }, [user, selectedOrgFilter]);
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-sky-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
@@ -33,17 +33,17 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
             className="flex items-center space-x-3 cursor-pointer group"
             onClick={() => onNavigate('landing')}
           >
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-500 p-0.5 shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform duration-300">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-sky-600 via-sky-500 to-blue-600 p-0.5 shadow-md shadow-sky-500/25 group-hover:scale-105 transition-transform duration-300">
               <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 text-orange-600" />
+                <GraduationCap className="w-6 h-6 text-sky-600" />
               </div>
             </div>
             <div>
               <div className="flex items-center space-x-2">
                 <span className="font-heading text-xl font-extrabold tracking-tight text-slate-900">
-                  Rathinam<span className="text-orange-600">HR</span>
+                  Rathinam<span className="text-sky-600">HR</span>
                 </span>
-                <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-orange-50 text-orange-700 border border-orange-200 rounded-full">
+                <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-sky-50 text-sky-700 border border-sky-200 rounded-full">
                   Portal
                 </span>
               </div>
@@ -59,8 +59,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
               onClick={() => onNavigate('landing')}
               className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                 currentView === 'landing' 
-                  ? 'bg-orange-50 text-orange-600 font-bold border border-orange-200' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-sky-50 text-sky-700 font-bold border border-sky-200' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-sky-50/60'
               }`}
             >
               Home
@@ -70,8 +70,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
               onClick={() => onNavigate('apply-selector')}
               className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                 currentView === 'apply-selector' || currentView === 'apply-form'
-                  ? 'bg-orange-50 text-orange-600 font-bold border border-orange-200' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-sky-50 text-sky-700 font-bold border border-sky-200' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-sky-50/60'
               }`}
             >
               Careers / Apply
@@ -81,8 +81,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
               onClick={() => onNavigate('track')}
               className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                 currentView === 'track' 
-                  ? 'bg-orange-50 text-orange-600 font-bold border border-orange-200' 
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-sky-50 text-sky-700 font-bold border border-sky-200' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-sky-50/60'
               }`}
             >
               Track Application
@@ -92,12 +92,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
           {/* Admin User / Login Action */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <div className="flex items-center space-x-3 pl-4 border-l border-slate-200">
+              <div className="flex items-center space-x-3 pl-4 border-l border-sky-100">
                 
                 {/* HR Dashboard Navigation */}
                 <button
                   onClick={() => onNavigate('admin-dashboard')}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-orange-600 hover:bg-orange-500 text-white text-sm font-bold shadow-md shadow-orange-500/20 transition-all"
+                  className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-bold shadow-md shadow-sky-500/25 transition-all"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   <span>HR Dashboard</span>
@@ -106,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
                 {/* Notifications Bell */}
                 <button
                   onClick={onOpenNotifications}
-                  className="relative p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200"
+                  className="relative p-2.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 transition-colors border border-sky-200"
                   title="Notifications"
                 >
                   <Bell className="w-5 h-5" />
@@ -118,15 +118,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
                 </button>
 
                 {/* User Avatar Dropdown */}
-                <div className="flex items-center space-x-3 bg-slate-100 py-1.5 px-3 rounded-xl border border-slate-200">
+                <div className="flex items-center space-x-3 bg-sky-50/80 py-1.5 px-3 rounded-xl border border-sky-200">
                   <img 
                     src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100'} 
                     alt={user.name}
-                    className="w-8 h-8 rounded-full object-cover border border-orange-400"
+                    className="w-8 h-8 rounded-full object-cover border border-sky-400"
                   />
                   <div className="text-left leading-tight">
                     <p className="text-xs font-bold text-slate-800 truncate max-w-[120px]">{user.name}</p>
-                    <p className="text-[10px] text-orange-600 font-semibold">{user.role.replace('_', ' ')}</p>
+                    <p className="text-[10px] text-sky-600 font-semibold">{user.role.replace('_', ' ')}</p>
                   </div>
                   <button 
                     onClick={logout}
@@ -141,7 +141,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
             ) : (
               <button
                 onClick={() => onNavigate('admin-login')}
-                className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm shadow-md shadow-orange-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm shadow-md shadow-sky-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <ShieldCheck className="w-4 h-4" />
                 <span>HR Admin Login</span>
