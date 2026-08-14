@@ -17,8 +17,8 @@ router.post('/login', (req, res) => {
     return res.status(401).json({ error: 'Invalid email or password' });
   }
 
-  // Simple password verification for demo: password matches or is 'admin123' / 'viewer123'
-  if (password !== user.passwordHash && password !== 'admin123' && password !== 'viewer123') {
+  // Simple password verification for demo: password matches or is '123' / 'admin123'
+  if (password !== user.passwordHash && password !== '123' && password !== 'admin123') {
     return res.status(401).json({ error: 'Invalid email or password' });
   }
 

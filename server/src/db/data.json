@@ -36,49 +36,13 @@
   ],
   "users": [
     {
-      "id": "usr-superadmin",
-      "name": "Dr. Subramaniam (Super Admin)",
-      "email": "admin@rathinam.in",
-      "passwordHash": "admin123",
+      "id": "usr-vanji-hr",
+      "name": "Vanji (HR Admin)",
+      "email": "vanji.hr@rathinam.in",
+      "passwordHash": "123",
       "role": "SUPER_ADMIN",
       "organizationId": null,
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250"
-    },
-    {
-      "id": "usr-hr-rgu",
-      "name": "Priya Sharma (RGU HR Lead)",
-      "email": "hr.rgu@rathinam.in",
-      "passwordHash": "admin123",
-      "role": "HR_ADMIN",
-      "organizationId": "RGU",
-      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250"
-    },
-    {
-      "id": "usr-hr-rtc",
-      "name": "Karthik Raja (RTC HR Officer)",
-      "email": "hr.rtc@rathinam.in",
-      "passwordHash": "admin123",
-      "role": "HR_ADMIN",
-      "organizationId": "RTC",
-      "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=250"
-    },
-    {
-      "id": "usr-hr-pharmacy",
-      "name": "Ananya Ramesh (Pharmacy HR)",
-      "email": "hr.pharmacy@rathinam.in",
-      "passwordHash": "admin123",
-      "role": "HR_ADMIN",
-      "organizationId": "RPHARM",
-      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=250"
-    },
-    {
-      "id": "usr-viewer",
-      "name": "Academic Inspector (Viewer)",
-      "email": "viewer@rathinam.in",
-      "passwordHash": "viewer123",
-      "role": "VIEWER",
-      "organizationId": null,
-      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=250"
     }
   ],
   "pdfFieldMappings": [

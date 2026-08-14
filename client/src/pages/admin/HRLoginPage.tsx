@@ -53,14 +53,14 @@ export const HRLoginPage: React.FC<HRLoginPageProps> = ({ onNavigate }) => {
   };
 
   // Quick Demo Login Handler
-  const quickLogin = async (demoEmail: string) => {
+  const quickLogin = async (demoEmail: string, pwd = '123') => {
     setEmail(demoEmail);
-    setPassword('admin123');
+    setPassword(pwd);
     setError(null);
     setLoading(true);
 
     try {
-      const res = await api.login(demoEmail, 'admin123');
+      const res = await api.login(demoEmail, pwd);
       login(res.token, res.user);
       onNavigate('admin-dashboard');
     } catch (err: any) {
@@ -104,7 +104,7 @@ export const HRLoginPage: React.FC<HRLoginPageProps> = ({ onNavigate }) => {
                 <input
                   type="email"
                   required
-                  placeholder="admin@rathinam.in"
+                  placeholder="vanji.hr@rathinam.in"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-sm"
@@ -169,39 +169,18 @@ export const HRLoginPage: React.FC<HRLoginPageProps> = ({ onNavigate }) => {
         {/* Quick Demo Preset Logins */}
         <div className="pt-4 border-t border-slate-800 space-y-2">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">
-            Quick Demo Login Presets
+            Quick Login Preset
           </p>
-          <div className="grid grid-cols-2 gap-2 text-xs">
+          <div>
             <button
-              onClick={() => quickLogin('admin@rathinam.in')}
-              className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left text-slate-200"
+              onClick={() => quickLogin('vanji.hr@rathinam.in', '123')}
+              className="w-full p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left text-slate-200 flex items-center justify-between"
             >
-              <p className="font-bold text-amber-400">Super Admin</p>
-              <p className="text-[10px] text-slate-400">All Organizations</p>
-            </button>
-
-            <button
-              onClick={() => quickLogin('hr.rgu@rathinam.in')}
-              className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left text-slate-200"
-            >
-              <p className="font-bold text-blue-400">RGU HR Admin</p>
-              <p className="text-[10px] text-slate-400">RGU Scoped</p>
-            </button>
-
-            <button
-              onClick={() => quickLogin('hr.rtc@rathinam.in')}
-              className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left text-slate-200"
-            >
-              <p className="font-bold text-emerald-400">RTC HR Admin</p>
-              <p className="text-[10px] text-slate-400">RTC Scoped</p>
-            </button>
-
-            <button
-              onClick={() => quickLogin('hr.pharmacy@rathinam.in')}
-              className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left text-slate-200"
-            >
-              <p className="font-bold text-yellow-400">Pharmacy HR</p>
-              <p className="text-[10px] text-slate-400">Pharmacy Scoped</p>
+              <div>
+                <p className="font-bold text-amber-400">Vanji (Super Admin)</p>
+                <p className="text-[10px] text-slate-400">vanji.hr@rathinam.in (Pass: 123)</p>
+              </div>
+              <UserCheck className="w-5 h-5 text-amber-400" />
             </button>
           </div>
         </div>

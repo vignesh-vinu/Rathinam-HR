@@ -12,6 +12,10 @@ async function syncUsersToSupabase() {
   const localData = db.read();
   console.log(`📦 Found ${localData.users.length} user accounts.`);
 
+  // Clean existing users table in Supabase
+  console.log('🧹 Cleaning old user accounts from Supabase...');
+  await supabaseDb.client.from('users').delete().neq('id', '');
+
   for (const user of localData.users) {
     const dbRow = {
       id: user.id,
