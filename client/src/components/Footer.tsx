@@ -3,7 +3,7 @@ import { GraduationCap, Mail, Phone, MapPin, Globe, Shield, Heart } from 'lucide
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-slate-100 border-t border-slate-200/80 pt-12 pb-8 mt-20 text-slate-600">
+    <footer className="bg-slate-100 border-t border-slate-200/80 pt-12 pb-8 mt-20 text-slate-600 no-print">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-slate-200">
           

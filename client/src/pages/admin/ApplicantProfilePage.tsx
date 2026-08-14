@@ -204,7 +204,7 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
       )}
 
       {/* HEADER CANDIDATE BANNER */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950">
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 no-print">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div className="flex items-center space-x-5">
