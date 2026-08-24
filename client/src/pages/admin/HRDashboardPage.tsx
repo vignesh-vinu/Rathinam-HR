@@ -3,11 +3,12 @@ import {
   Users, Building, FileText, CheckCircle2, Clock, XCircle, Filter, 
   Search, Plus, Download, Printer, Edit, Trash2, Eye, ChevronDown, 
   ChevronRight, RefreshCw, Shield, ArrowUpRight, FileSpreadsheet, 
-  BarChart3, Sparkles, MapPin, Award, Layers, HelpCircle, CheckSquare, Square
+  BarChart3, Sparkles, MapPin, Award, Layers, HelpCircle, CheckSquare, Square, Calendar as CalendarIcon
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import { Application, OrganizationId, ApplicationStatus } from '../../types';
+import { CalendarDialogModal } from '../../components/CalendarDialogModal';
 
 interface HRDashboardPageProps {
   onNavigate: (view: string, param?: any) => void;
@@ -50,6 +51,7 @@ export const HRDashboardPage: React.FC<HRDashboardPageProps> = ({ onNavigate }) 
   const [activeItemForStatus, setActiveItemForStatus] = useState<Application | null>(null);
   const [itemToDelete, setItemToDelete] = useState<Application | null>(null);
   const [showManualCreateModal, setShowManualCreateModal] = useState(false);
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
 
   // Manual Create Form State
   const [newApplicant, setNewApplicant] = useState({
@@ -269,6 +271,14 @@ export const HRDashboardPage: React.FC<HRDashboardPageProps> = ({ onNavigate }) 
           >
             <Shield className="w-4 h-4 text-emerald-600" />
             <span>Audit Logs</span>
+          </button>
+
+          <button
+            onClick={() => setShowCalendarModal(true)}
+            className="flex items-center space-x-2 px-3.5 py-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 font-bold text-xs border border-sky-300 shadow-sm transition-all hover:scale-105"
+          >
+            <CalendarIcon className="w-4 h-4 text-sky-600" />
+            <span>Recruitment Calendar</span>
           </button>
 
           <button
@@ -873,6 +883,13 @@ export const HRDashboardPage: React.FC<HRDashboardPageProps> = ({ onNavigate }) 
           </div>
         </div>
       )}
+
+      {/* RECRUITMENT CALENDAR DIALOG MODAL */}
+      <CalendarDialogModal
+        isOpen={showCalendarModal}
+        onClose={() => setShowCalendarModal(false)}
+        title="Rathinam HR Recruitment & Interview Calendar"
+      />
 
     </div>
   );

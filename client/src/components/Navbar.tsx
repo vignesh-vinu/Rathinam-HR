@@ -33,16 +33,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenN
             className="flex items-center space-x-3 cursor-pointer group"
             onClick={() => onNavigate('landing')}
           >
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-sky-600 via-sky-500 to-blue-600 p-0.5 shadow-md shadow-sky-500/25 group-hover:scale-105 transition-transform duration-300">
-              <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 text-sky-600" />
-              </div>
+            <div className="w-11 h-11 rounded-xl bg-white p-1 border border-sky-200/80 shadow-md shadow-sky-500/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 flex-shrink-0">
+              <img src="/rathinam_logo.png" alt="Rathinam Group Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-heading text-xl font-extrabold tracking-tight text-slate-900">
-                  Rathinam<span className="text-sky-600">HR</span>
-                </span>
+                <img src="/rathinam_hr_brand.png" alt="Rathinam HR" className="h-4.5 sm:h-5 w-auto object-contain" />
                 <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-sky-50 text-sky-700 border border-sky-200 rounded-full">
                   Portal
                 </span>

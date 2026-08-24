@@ -54,20 +54,41 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
       const ln = editFormData.personalDetails?.lastName || '';
       const fullName = `${fn} ${mn} ${ln}`.replace(/\s+/g, ' ').trim().toUpperCase();
 
+      let age = app.personalDetails?.age || 0;
+      if (editFormData.personalDetails?.dob) {
+        const birthYear = new Date(editFormData.personalDetails.dob).getFullYear();
+        if (!isNaN(birthYear) && birthYear > 1900) {
+          age = new Date().getFullYear() - birthYear;
+        }
+      }
+
       const payload = {
+        ...app,
         ...editFormData,
         personalDetails: {
+          ...app.personalDetails,
           ...editFormData.personalDetails,
-          fullName
+          fullName,
+          age
+        },
+        contactDetails: {
+          ...app.contactDetails,
+          ...editFormData.contactDetails
+        },
+        financialDetails: {
+          ...app.financialDetails,
+          ...editFormData.financialDetails
         },
         updatedBy: user?.name || 'HR Admin'
       };
 
-      await api.updateApplication(app.id, payload);
+      const res = await api.updateApplication(app.id, payload);
+      const updated = res.application || payload;
+      setApp(updated);
       setShowEditModal(false);
       setSuccessToast('Candidate application details updated and saved successfully!');
       setTimeout(() => setSuccessToast(null), 4000);
-      fetchDetails();
+      fetchDetails(false);
     } catch (err: any) {
       alert(err.message || 'Failed to save candidate updates');
     } finally {
@@ -75,23 +96,25 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
     }
   };
 
-  const fetchDetails = async () => {
-    setLoading(true);
+  const fetchDetails = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     try {
       const data = await api.getApplicationById(applicationId);
-      setApp(data.application);
-      setHistory(data.statusHistory || []);
-      setNotes(data.hrNotes || []);
+      if (data && data.application) {
+        setApp(data.application);
+        setHistory(data.statusHistory || []);
+        setNotes(data.hrNotes || []);
+      }
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   };
 
   useEffect(() => {
     if (applicationId) {
-      fetchDetails();
+      fetchDetails(true);
     }
   }, [applicationId]);
 
@@ -663,18 +686,49 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-black">
-                  {(app.languagesKnown || []).map((lang, idx) => (
-                    <tr key={idx}>
-                      <td className="border-r border-black p-1">{idx + 1}</td>
-                      <td className="border-r border-black p-1 font-semibold">{lang.language}</td>
-                      <td className="border-r border-black p-1 font-mono text-[10px]">
-                        {lang.read ? '☑' : '☐'} &nbsp; {lang.write ? '☑' : '☐'} &nbsp; {lang.speak ? '☑' : '☐'} &nbsp; {lang.understand ? '☑' : '☐'}
-                      </td>
-                      <td className="border-r border-black p-1">-</td>
-                      <td className="border-r border-black p-1">-</td>
-                      <td className="p-1 font-mono text-[10px]">-</td>
-                    </tr>
-                  ))}
+                  {(() => {
+                    const activeLangs = (app.languagesKnown || []).filter(
+                      l => l.language && (l.read || l.write || l.speak || l.understand)
+                    );
+                    if (activeLangs.length === 0) {
+                      return (
+                        <tr>
+                          <td className="border-r border-black p-1 text-[10px] text-slate-500 font-semibold" colSpan={3}>None specified</td>
+                          <td className="p-1 text-[10px] text-slate-500 font-semibold" colSpan={3}>-</td>
+                        </tr>
+                      );
+                    }
+                    const rows = [];
+                    for (let i = 0; i < activeLangs.length; i += 2) {
+                      const left = activeLangs[i];
+                      const right = activeLangs[i + 1];
+                      rows.push(
+                        <tr key={i}>
+                          <td className="border-r border-black p-1 font-semibold">{i + 1}</td>
+                          <td className="border-r border-black p-1 font-bold">{left.language}</td>
+                          <td className="border-r border-black p-1 font-mono text-[10px]">
+                            {left.read ? '☑' : '☐'} &nbsp; {left.write ? '☑' : '☐'} &nbsp; {left.speak ? '☑' : '☐'} &nbsp; {left.understand ? '☑' : '☐'}
+                          </td>
+                          {right ? (
+                            <>
+                              <td className="border-r border-black p-1 font-semibold">{i + 2}</td>
+                              <td className="border-r border-black p-1 font-bold">{right.language}</td>
+                              <td className="p-1 font-mono text-[10px]">
+                                {right.read ? '☑' : '☐'} &nbsp; {right.write ? '☑' : '☐'} &nbsp; {right.speak ? '☑' : '☐'} &nbsp; {right.understand ? '☑' : '☐'}
+                              </td>
+                            </>
+                          ) : (
+                            <>
+                              <td className="border-r border-black p-1">-</td>
+                              <td className="border-r border-black p-1">-</td>
+                              <td className="p-1 font-mono text-[10px]">-</td>
+                            </>
+                          )}
+                        </tr>
+                      );
+                    }
+                    return rows;
+                  })()}
                 </tbody>
               </table>
             </div>
@@ -776,10 +830,9 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
                 I hereby solemnly declare that all the details furnished above are true to the best of my knowledge
               </p>
               
-              <div className="grid grid-cols-3 text-xs font-bold pt-4 text-center">
+              <div className="grid grid-cols-2 text-xs font-bold pt-4 text-center max-w-md mx-auto">
                 <div>Date : <span className="font-normal underline">{app.declarationDate || new Date().toISOString().split('T')[0]}</span></div>
                 <div>Place : <span className="font-normal underline">{app.declarationPlace || 'Coimbatore'}</span></div>
-                <div>Signature : <span className="font-normal italic">_________________</span></div>
               </div>
             </div>
 
@@ -1066,6 +1119,36 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
 
             {/* Contact Details */}
             <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={editFormData.contactDetails?.email || ''}
+                    onChange={e => setEditFormData({
+                      ...editFormData,
+                      contactDetails: { ...editFormData.contactDetails, email: e.target.value }
+                    })}
+                    className="w-full px-3 py-2 rounded-xl glass-input text-xs text-slate-900 border border-sky-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Mobile No</label>
+                  <input
+                    type="text"
+                    required
+                    value={editFormData.contactDetails?.mobile || ''}
+                    onChange={e => setEditFormData({
+                      ...editFormData,
+                      contactDetails: { ...editFormData.contactDetails, mobile: e.target.value }
+                    })}
+                    className="w-full px-3 py-2 rounded-xl glass-input text-xs text-slate-900 border border-sky-200"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">Full Address</label>
                 <input
@@ -1079,7 +1162,7 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">Pincode</label>
                   <input
@@ -1118,20 +1201,62 @@ export const ApplicantProfilePage: React.FC<ApplicantProfilePageProps> = ({ appl
                     className="w-full px-3 py-2 rounded-xl glass-input text-xs text-slate-900 border border-sky-200"
                   />
                 </div>
+              </div>
+            </div>
 
+            {/* Financial & Professional Experience */}
+            <div className="space-y-3 pt-2 border-t border-sky-100">
+              <h4 className="text-xs font-extrabold text-sky-800 uppercase tracking-wider">Experience & Salary Details</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Mobile No</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Total Experience (Years)</label>
                   <input
                     type="text"
-                    required
-                    value={editFormData.contactDetails?.mobile || ''}
+                    value={editFormData.financialDetails?.totalExperienceYears || ''}
                     onChange={e => setEditFormData({
                       ...editFormData,
-                      contactDetails: { ...editFormData.contactDetails, mobile: e.target.value }
+                      financialDetails: { ...editFormData.financialDetails, totalExperienceYears: e.target.value }
                     })}
                     className="w-full px-3 py-2 rounded-xl glass-input text-xs text-slate-900 border border-sky-200"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Current Gross Salary (PA)</label>
+                  <input
+                    type="text"
+                    value={editFormData.financialDetails?.currentSalary || ''}
+                    onChange={e => setEditFormData({
+                      ...editFormData,
+                      financialDetails: { ...editFormData.financialDetails, currentSalary: e.target.value }
+                    })}
+                    className="w-full px-3 py-2 rounded-xl glass-input text-xs text-slate-900 border border-sky-200 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Expected Salary (PA)</label>
+                  <input
+                    type="text"
+                    value={editFormData.financialDetails?.expectedSalary || ''}
+                    onChange={e => setEditFormData({
+                      ...editFormData,
+                      financialDetails: { ...editFormData.financialDetails, expectedSalary: e.target.value }
+                    })}
+                    className="w-full px-3 py-2 rounded-xl glass-input text-xs text-slate-900 border border-sky-200 font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Certifications / Special Skills</label>
+                <input
+                  type="text"
+                  placeholder="Oracle, AWS, Java, etc."
+                  value={editFormData.certifications || ''}
+                  onChange={e => setEditFormData({ ...editFormData, certifications: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl glass-input text-xs text-slate-900 border border-sky-200"
+                />
               </div>
             </div>
 

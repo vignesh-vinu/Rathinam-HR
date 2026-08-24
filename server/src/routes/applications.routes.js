@@ -4,28 +4,33 @@ const { v4: uuidv4 } = require('uuid');
 const db = require('../db/db');
 
 // Helper to check duplicates
-const findDuplicate = (applications, email, mobile) => {
+const findDuplicate = (applications, email, mobile, positionApplied, organizationId) => {
   if (!email && !mobile) return null;
-  return applications.find(app => !app.isDeleted && (
-    (email && app.contactDetails?.email?.toLowerCase() === email.toLowerCase()) ||
-    (mobile && app.contactDetails?.mobile === mobile)
-  ));
+  return applications.find(app => !app.isDeleted && 
+    app.organizationId === organizationId &&
+    (positionApplied && app.positionApplied?.toLowerCase() === positionApplied?.toLowerCase()) && (
+      (email && app.contactDetails?.email?.toLowerCase() === email.toLowerCase()) ||
+      (mobile && app.contactDetails?.mobile === mobile)
+    )
+  );
 };
 
 // 1. PUBLIC: Submit New Application
-router.post('/submit', (req, res) => {
+router.post('/submit', async (req, res) => {
   const applicationData = req.body;
   const data = db.read();
 
   const email = applicationData.contactDetails?.email;
   const mobile = applicationData.contactDetails?.mobile;
+  const positionApplied = applicationData.positionApplied;
+  const organizationId = applicationData.organizationId || 'RGU';
 
   // Duplicate Check
-  const duplicate = findDuplicate(data.applications, email, mobile);
+  const duplicate = findDuplicate(data.applications, email, mobile, positionApplied, organizationId);
   if (duplicate) {
     return res.status(409).json({
       error: 'Duplicate application detected',
-      message: `An application (${duplicate.applicationId}) has already been submitted with email "${email}" or mobile "${mobile}".`,
+      message: `An application (${duplicate.applicationId}) for ${positionApplied} at ${organizationId} has already been submitted with email "${email}" or mobile "${mobile}".`,
       existingId: duplicate.applicationId
     });
   }
@@ -107,7 +112,11 @@ router.post('/submit', (req, res) => {
   // Sync to Supabase PostgreSQL Database if configured
   const supabaseDb = require('../db/supabase');
   if (supabaseDb.isConfigured()) {
-    supabaseDb.insertApplication(newApp).catch(err => console.error('Supabase async sync error:', err.message));
+    try {
+      await supabaseDb.insertApplication(newApp);
+    } catch (err) {
+      console.error('Supabase async sync error:', err.message);
+    }
   }
 
   res.status(201).json({
@@ -117,25 +126,49 @@ router.post('/submit', (req, res) => {
   });
 });
 
-// 2. PUBLIC: Track Application by ID + Mobile/Email
-router.post('/track', (req, res) => {
+// 2. PUBLIC: Track Application by ID / Mobile / Email
+router.post('/track', async (req, res) => {
   const { applicationId, identifier } = req.body;
-  if (!applicationId) {
-    return res.status(400).json({ error: 'Application ID is required' });
+  const searchTerm = (applicationId || identifier || '').trim().toLowerCase();
+
+  if (!searchTerm) {
+    return res.status(400).json({ error: 'Please enter your Application ID, Mobile number, or Email address.' });
   }
 
-  const data = db.read();
-  const app = data.applications.find(a => 
-    !a.isDeleted && 
-    a.applicationId.toLowerCase() === applicationId.trim().toLowerCase()
-  );
+  const supabaseDb = require('../db/supabase');
+  let app = null;
+  let history = [];
+
+  if (supabaseDb.isConfigured()) {
+    const spData = await supabaseDb.getApplicationById(searchTerm);
+    if (spData && spData.application) {
+      app = spData.application;
+      history = spData.statusHistory || [];
+    }
+  }
 
   if (!app) {
-    return res.status(404).json({ error: 'Application not found with the provided ID.' });
+    const data = db.read();
+    app = data.applications.find(a => 
+      !a.isDeleted && (
+        a.applicationId.toLowerCase() === searchTerm ||
+        a.id.toLowerCase() === searchTerm ||
+        (a.contactDetails?.email && a.contactDetails.email.toLowerCase() === searchTerm) ||
+        (a.contactDetails?.mobile && a.contactDetails.mobile === searchTerm) ||
+        (a.contactDetails?.phone && a.contactDetails.phone === searchTerm)
+      )
+    );
+    if (app) {
+      history = data.statusHistory.filter(h => h.applicationId === app.applicationId);
+    }
   }
 
-  // Validate mobile or email if identifier provided
-  if (identifier) {
+  if (!app) {
+    return res.status(404).json({ error: `No application found matching "${searchTerm}". Please check your Application ID, registered email, or mobile number.` });
+  }
+
+  // Validate optional second identifier if provided
+  if (identifier && applicationId && identifier.trim().toLowerCase() !== applicationId.trim().toLowerCase()) {
     const cleanId = identifier.trim().toLowerCase();
     const emailMatch = app.contactDetails?.email?.toLowerCase() === cleanId;
     const mobileMatch = app.contactDetails?.mobile === cleanId || app.contactDetails?.phone === cleanId;
@@ -144,9 +177,6 @@ router.post('/track', (req, res) => {
       return res.status(401).json({ error: 'Mobile number or Email ID does not match our records for this Application ID.' });
     }
   }
-
-  // Get status history
-  const history = data.statusHistory.filter(h => h.applicationId === app.applicationId);
 
   res.json({
     applicationId: app.applicationId,
@@ -162,7 +192,7 @@ router.post('/track', (req, res) => {
 });
 
 // 3. HR ADMIN: List Applications with Search, Filter, Organization Scope, Date Filter, Pagination
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   const {
     organizationId,
     status,
@@ -175,8 +205,16 @@ router.get('/', (req, res) => {
     sortOrder = 'desc'
   } = req.query;
 
-  const data = db.read();
-  let list = data.applications.filter(a => !a.isDeleted);
+  let list = null;
+  const supabaseDb = require('../db/supabase');
+  if (supabaseDb.isConfigured()) {
+    list = await supabaseDb.getApplications({ organizationId, status });
+  }
+
+  if (!list) {
+    const data = db.read();
+    list = data.applications.filter(a => !a.isDeleted);
+  }
 
   // Organization Scoping Filter
   if (organizationId && organizationId !== 'ALL' && organizationId !== 'All Organizations') {
@@ -212,7 +250,7 @@ router.get('/', (req, res) => {
       const name = `${a.personalDetails?.firstName || ''} ${a.personalDetails?.lastName || ''}`.toLowerCase();
       const email = (a.contactDetails?.email || '').toLowerCase();
       const mobile = a.contactDetails?.mobile || '';
-      const appCode = a.applicationId.toLowerCase();
+      const appCode = (a.applicationId || '').toLowerCase();
       const pos = (a.positionApplied || '').toLowerCase();
       return name.includes(q) || email.includes(q) || mobile.includes(q) || appCode.includes(q) || pos.includes(q);
     });
@@ -251,8 +289,17 @@ router.get('/', (req, res) => {
 });
 
 // 4. HR ADMIN: Get Application Details by ID
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
+
+  const supabaseDb = require('../db/supabase');
+  if (supabaseDb.isConfigured()) {
+    const spData = await supabaseDb.getApplicationById(id);
+    if (spData && spData.application) {
+      return res.json(spData);
+    }
+  }
+
   const data = db.read();
   const app = data.applications.find(a => 
     !a.isDeleted && (a.id === id || a.applicationId === id)
@@ -273,31 +320,33 @@ router.get('/:id', (req, res) => {
 });
 
 // 5. HR ADMIN: Update Application (Edit details)
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const updatePayload = req.body;
   const data = db.read();
 
   const index = data.applications.findIndex(a => !a.isDeleted && (a.id === id || a.applicationId === id));
-  if (index === -1) {
-    return res.status(404).json({ error: 'Application not found' });
-  }
+  const existing = index !== -1 ? data.applications[index] : null;
 
-  const existing = data.applications[index];
-  const updatedApp = {
-    ...existing,
+  let updatedApp = {
+    ...(existing || {}),
     ...updatePayload,
+    id: existing ? existing.id : id,
     updatedAt: new Date().toISOString()
   };
 
-  data.applications[index] = updatedApp;
+  if (index !== -1) {
+    data.applications[index] = updatedApp;
+  } else {
+    data.applications.unshift(updatedApp);
+  }
 
   // Add audit log
   data.auditLogs.unshift({
     id: `audit-${uuidv4().slice(0, 8)}`,
     user: updatePayload.updatedBy || 'HR Admin',
     action: 'APPLICATION_UPDATED',
-    details: `Updated details for ${existing.applicationId}`,
+    details: `Updated candidate details for ${updatedApp.applicationId || id}`,
     timestamp: new Date().toISOString()
   });
 
@@ -306,14 +355,19 @@ router.put('/:id', (req, res) => {
   // Sync update to Supabase PostgreSQL Database if configured
   const supabaseDb = require('../db/supabase');
   if (supabaseDb.isConfigured()) {
-    supabaseDb.updateApplication(id, updatedApp).catch(err => console.error('Supabase update sync error:', err.message));
+    try {
+      const spResult = await supabaseDb.updateApplication(id, updatedApp);
+      if (spResult) updatedApp = spResult;
+    } catch (err) {
+      console.error('Supabase update sync error:', err.message);
+    }
   }
 
   res.json({ message: 'Application updated successfully', application: updatedApp });
 });
 
 // 6. HR ADMIN: Change Application Status
-router.patch('/:id/status', (req, res) => {
+router.patch('/:id/status', async (req, res) => {
   const { id } = req.params;
   const { status, remarks, updatedBy = 'HR Admin' } = req.body;
 
@@ -324,54 +378,63 @@ router.patch('/:id/status', (req, res) => {
   const data = db.read();
   const app = data.applications.find(a => !a.isDeleted && (a.id === id || a.applicationId === id));
 
-  if (!app) {
-    return res.status(404).json({ error: 'Application not found' });
+  if (app) {
+    const prevStatus = app.status;
+    app.status = status;
+    app.updatedAt = new Date().toISOString();
+
+    // Record History
+    data.statusHistory.unshift({
+      id: `his-${uuidv4().slice(0, 8)}`,
+      applicationId: app.applicationId,
+      fromStatus: prevStatus,
+      toStatus: status,
+      updatedBy,
+      remarks: remarks || `Status changed from ${prevStatus} to ${status}`,
+      timestamp: new Date().toISOString()
+    });
+
+    // Notification
+    const applicantName = `${app.personalDetails?.firstName || ''} ${app.personalDetails?.lastName || ''}`.trim();
+    data.notifications.unshift({
+      id: `notif-${uuidv4().slice(0, 8)}`,
+      applicationId: app.applicationId,
+      applicantName,
+      organizationId: app.organizationId,
+      title: `Status Changed: ${status}`,
+      message: `${applicantName} status changed to ${status} by ${updatedBy}`,
+      status,
+      isRead: false,
+      timestamp: new Date().toISOString()
+    });
+
+    // Audit Log
+    data.auditLogs.unshift({
+      id: `audit-${uuidv4().slice(0, 8)}`,
+      user: updatedBy,
+      action: 'STATUS_CHANGE',
+      details: `Changed ${app.applicationId} from ${prevStatus} to ${status}`,
+      timestamp: new Date().toISOString()
+    });
+
+    db.write(data);
   }
 
-  const prevStatus = app.status;
-  app.status = status;
-  app.updatedAt = new Date().toISOString();
+  // Supabase update
+  const supabaseDb = require('../db/supabase');
+  if (supabaseDb.isConfigured()) {
+    try {
+      await supabaseDb.updateStatus(id, status, remarks, updatedBy);
+    } catch (err) {
+      console.error('Supabase status sync error:', err.message);
+    }
+  }
 
-  // Record History
-  data.statusHistory.unshift({
-    id: `his-${uuidv4().slice(0, 8)}`,
-    applicationId: app.applicationId,
-    fromStatus: prevStatus,
-    toStatus: status,
-    updatedBy,
-    remarks: remarks || `Status changed from ${prevStatus} to ${status}`,
-    timestamp: new Date().toISOString()
-  });
-
-  // Notification
-  const applicantName = `${app.personalDetails?.firstName || ''} ${app.personalDetails?.lastName || ''}`.trim();
-  data.notifications.unshift({
-    id: `notif-${uuidv4().slice(0, 8)}`,
-    applicationId: app.applicationId,
-    applicantName,
-    organizationId: app.organizationId,
-    title: `Status Changed: ${status}`,
-    message: `${applicantName} status changed to ${status} by ${updatedBy}`,
-    status,
-    isRead: false,
-    timestamp: new Date().toISOString()
-  });
-
-  // Audit Log
-  data.auditLogs.unshift({
-    id: `audit-${uuidv4().slice(0, 8)}`,
-    user: updatedBy,
-    action: 'STATUS_CHANGE',
-    details: `Changed ${app.applicationId} from ${prevStatus} to ${status}`,
-    timestamp: new Date().toISOString()
-  });
-
-  db.write(data);
-  res.json({ message: 'Status updated successfully', status: app.status });
+  res.json({ message: 'Status updated successfully', status });
 });
 
 // 7. HR ADMIN: Add Internal HR Note
-router.post('/:id/notes', (req, res) => {
+router.post('/:id/notes', async (req, res) => {
   const { id } = req.params;
   const { content, author = 'HR Admin' } = req.body;
 
@@ -382,13 +445,9 @@ router.post('/:id/notes', (req, res) => {
   const data = db.read();
   const app = data.applications.find(a => !a.isDeleted && (a.id === id || a.applicationId === id));
 
-  if (!app) {
-    return res.status(404).json({ error: 'Application not found' });
-  }
-
   const newNote = {
     id: `note-${uuidv4().slice(0, 8)}`,
-    applicationId: app.applicationId,
+    applicationId: app ? app.applicationId : id,
     author,
     content,
     createdAt: new Date().toISOString()
@@ -397,38 +456,57 @@ router.post('/:id/notes', (req, res) => {
   data.hrNotes.unshift(newNote);
   db.write(data);
 
+  // Supabase update
+  const supabaseDb = require('../db/supabase');
+  if (supabaseDb.isConfigured()) {
+    try {
+      await supabaseDb.addHRNote(id, content, author);
+    } catch (err) {
+      console.error('Supabase note sync error:', err.message);
+    }
+  }
+
   res.status(201).json({ message: 'Note added successfully', note: newNote });
 });
 
 // 8. HR ADMIN: Soft Delete Application
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   const { deletedBy = 'HR Admin' } = req.body || {};
 
   const data = db.read();
   const app = data.applications.find(a => (a.id === id || a.applicationId === id));
 
-  if (!app) {
-    return res.status(404).json({ error: 'Application not found' });
+  if (app) {
+    app.isDeleted = true;
+    app.updatedAt = new Date().toISOString();
+
+    data.auditLogs.unshift({
+      id: `audit-${uuidv4().slice(0, 8)}`,
+      user: deletedBy,
+      action: 'APPLICATION_DELETED',
+      details: `Deleted application ${app.applicationId}`,
+      timestamp: new Date().toISOString()
+    });
+
+    db.write(data);
   }
 
-  app.isDeleted = true;
-  app.updatedAt = new Date().toISOString();
+  // Supabase update
+  const supabaseDb = require('../db/supabase');
+  if (supabaseDb.isConfigured()) {
+    try {
+      await supabaseDb.deleteApplication(id);
+    } catch (err) {
+      console.error('Supabase delete sync error:', err.message);
+    }
+  }
 
-  data.auditLogs.unshift({
-    id: `audit-${uuidv4().slice(0, 8)}`,
-    user: deletedBy,
-    action: 'APPLICATION_DELETED',
-    details: `Deleted application ${app.applicationId}`,
-    timestamp: new Date().toISOString()
-  });
-
-  db.write(data);
-  res.json({ message: `Application ${app.applicationId} has been deleted.` });
+  res.json({ message: `Application record has been deleted.` });
 });
 
 // 9. HR ADMIN: Bulk Operations (Bulk Status Change / Bulk Delete)
-router.post('/bulk', (req, res) => {
+router.post('/bulk', async (req, res) => {
   const { action, ids, status, remarks, updatedBy = 'HR Admin' } = req.body;
 
   if (!Array.isArray(ids) || ids.length === 0) {
@@ -438,8 +516,12 @@ router.post('/bulk', (req, res) => {
   const data = db.read();
   let affectedCount = 0;
 
-  data.applications.forEach(app => {
-    if (ids.includes(app.id) || ids.includes(app.applicationId)) {
+  const supabaseDb = require('../db/supabase');
+  const isSp = supabaseDb.isConfigured();
+
+  for (const itemCode of ids) {
+    const app = data.applications.find(a => a.id === itemCode || a.applicationId === itemCode);
+    if (app) {
       if (action === 'STATUS_CHANGE' && status) {
         const prev = app.status;
         app.status = status;
@@ -454,13 +536,21 @@ router.post('/bulk', (req, res) => {
           timestamp: new Date().toISOString()
         });
         affectedCount++;
+
+        if (isSp) {
+          await supabaseDb.updateStatus(itemCode, status, remarks, updatedBy).catch(() => {});
+        }
       } else if (action === 'DELETE') {
         app.isDeleted = true;
         app.updatedAt = new Date().toISOString();
         affectedCount++;
+
+        if (isSp) {
+          await supabaseDb.deleteApplication(itemCode).catch(() => {});
+        }
       }
     }
-  });
+  }
 
   data.auditLogs.unshift({
     id: `audit-${uuidv4().slice(0, 8)}`,

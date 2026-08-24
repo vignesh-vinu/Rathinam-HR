@@ -86,7 +86,7 @@ const MainLayout: React.FC = () => {
           />
         )}
 
-        {/* HR ADMIN VIEWS */}
+        {/* HR ADMIN VIEWS - PROTECTED ROUTES */}
         {currentView === 'admin-login' && (
           <HRLoginPage onNavigate={navigateTo} />
         )}
@@ -100,19 +100,32 @@ const MainLayout: React.FC = () => {
         )}
 
         {currentView === 'applicant-profile' && (
-          <ApplicantProfilePage
-            applicationId={viewParams.id}
-            onNavigate={navigateTo}
-          />
+          user ? (
+            <ApplicantProfilePage
+              applicationId={viewParams.id}
+              onNavigate={navigateTo}
+            />
+          ) : (
+            <HRLoginPage onNavigate={navigateTo} />
+          )
         )}
 
         {currentView === 'field-mapper' && (
-          <PDFFieldMapperPage onNavigate={navigateTo} />
+          user ? (
+            <PDFFieldMapperPage onNavigate={navigateTo} />
+          ) : (
+            <HRLoginPage onNavigate={navigateTo} />
+          )
         )}
 
         {currentView === 'audit-logs' && (
-          <AuditLogsPage onNavigate={navigateTo} />
+          user ? (
+            <AuditLogsPage onNavigate={navigateTo} />
+          ) : (
+            <HRLoginPage onNavigate={navigateTo} />
+          )
         )}
+
       </main>
 
       {/* Footer */}

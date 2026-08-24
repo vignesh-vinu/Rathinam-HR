@@ -6,7 +6,12 @@ router.get('/', (req, res) => {
   const { organizationId } = req.query;
   const data = db.read();
 
-  let list = data.notifications || [];
+  // Get active non-deleted application IDs
+  const activeAppIds = new Set(
+    (data.applications || []).filter(a => !a.isDeleted).map(a => a.applicationId)
+  );
+
+  let list = (data.notifications || []).filter(n => activeAppIds.has(n.applicationId));
   if (organizationId && organizationId !== 'ALL' && organizationId !== 'All Organizations') {
     list = list.filter(n => n.organizationId === organizationId);
   }

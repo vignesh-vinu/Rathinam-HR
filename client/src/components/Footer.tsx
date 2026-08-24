@@ -5,21 +5,17 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-slate-100 border-t border-slate-200/80 pt-12 pb-8 mt-20 text-slate-600 no-print">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-slate-200">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-slate-200">
           
           {/* Brand Col */}
-          <div className="space-y-4 md:col-span-1">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-600 p-0.5 flex items-center justify-center shadow-sm">
-                <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
-                  <GraduationCap className="w-5 h-5 text-orange-600" />
-                </div>
+          <div className="space-y-4 md:col-span-4">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-10 h-10 rounded-xl bg-white p-1 border border-slate-200 shadow-sm flex items-center justify-center flex-shrink-0">
+                <img src="/rathinam_logo.png" alt="Rathinam Group Logo" className="w-full h-full object-contain" />
               </div>
-              <span className="font-heading text-lg font-bold text-slate-900">
-                Rathinam<span className="text-orange-600">HR</span>
-              </span>
+              <img src="/rathinam_hr_brand.png" alt="Rathinam HR" className="h-4.5 sm:h-5 max-w-[170px] w-auto object-contain flex-shrink-0" />
             </div>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-slate-500 leading-relaxed pr-2">
               Official Smart Recruitment & Applicant Management Platform for Rathinam Group of Institutions, Coimbatore, Tamil Nadu.
             </p>
             <div className="flex items-center space-x-3 text-xs text-slate-500">
@@ -29,7 +25,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Institutions */}
-          <div className="space-y-3">
+          <div className="space-y-3 md:col-span-3">
             <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-heading">Institutions</h4>
             <ul className="space-y-2 text-xs text-slate-600">
               <li className="hover:text-orange-600 transition-colors cursor-pointer">Rathinam Global (Deemed to be University) (RGU)</li>
@@ -40,7 +36,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Candidate Tools */}
-          <div className="space-y-3">
+          <div className="space-y-3 md:col-span-2">
             <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-heading">Applicant Portal</h4>
             <ul className="space-y-2 text-xs text-slate-600">
               <li className="hover:text-orange-600 transition-colors cursor-pointer">Online Application Form</li>
@@ -51,7 +47,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-3">
+          <div className="space-y-3 md:col-span-3">
             <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-heading">HR Contact</h4>
             <ul className="space-y-2 text-xs text-slate-600">
               <li className="flex items-center space-x-2">

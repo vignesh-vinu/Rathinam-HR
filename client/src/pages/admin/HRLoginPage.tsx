@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GraduationCap, ShieldCheck, KeyRound, Mail, Lock, ArrowRight, Sparkles, CheckCircle2, UserCheck } from 'lucide-react';
+import { ShieldCheck, KeyRound, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 
@@ -52,23 +52,6 @@ export const HRLoginPage: React.FC<HRLoginPageProps> = ({ onNavigate }) => {
     }
   };
 
-  // Quick Demo Login Handler
-  const quickLogin = async (demoEmail: string, pwd = '123') => {
-    setEmail(demoEmail);
-    setPassword(pwd);
-    setError(null);
-    setLoading(true);
-
-    try {
-      const res = await api.login(demoEmail, pwd);
-      login(res.token, res.user);
-      onNavigate('admin-dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Quick login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="max-w-md mx-auto px-4 py-16 animate-fadeIn pb-24">
@@ -76,15 +59,20 @@ export const HRLoginPage: React.FC<HRLoginPageProps> = ({ onNavigate }) => {
         
         {/* Brand Icon Header */}
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-600 via-sky-500 to-blue-600 p-0.5 shadow-lg shadow-sky-500/25 mx-auto">
-            <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
-              <ShieldCheck className="w-8 h-8 text-sky-600" />
-            </div>
+          <div className="w-16 h-16 rounded-2xl bg-white p-2 border border-sky-200 shadow-lg shadow-sky-500/10 mx-auto flex items-center justify-center">
+            <img src="/rathinam_logo.png" alt="Rathinam Group Logo" className="w-full h-full object-contain" />
           </div>
-          <div>
-            <h2 className="text-2xl font-heading font-extrabold text-slate-900">HR Admin Portal</h2>
-            <p className="text-xs text-slate-500 mt-1">Rathinam Group Recruitment Management System</p>
+          <div className="flex flex-col items-center space-y-1">
+            <img src="/rathinam_hr_brand.png" alt="Rathinam HR" className="h-5 w-auto object-contain mx-auto mt-1" />
+            <h2 className="text-sm font-heading font-extrabold text-sky-700 tracking-wider uppercase pt-1">Admin Portal</h2>
+            <p className="text-xs text-slate-500">Rathinam Group Recruitment Management System</p>
           </div>
+        </div>
+
+        {/* Security Notice Banner */}
+        <div className="flex items-center space-x-2 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-semibold">
+          <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
+          <span>Restricted Portal: Access restricted to authorized Rathinam HR Administrators only.</span>
         </div>
 
         {error && (
@@ -104,7 +92,7 @@ export const HRLoginPage: React.FC<HRLoginPageProps> = ({ onNavigate }) => {
                 <input
                   type="email"
                   required
-                  placeholder="vanji.hr@rathinam.in"
+                  placeholder="admin@rathinam.in"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-sm"
@@ -166,26 +154,9 @@ export const HRLoginPage: React.FC<HRLoginPageProps> = ({ onNavigate }) => {
           </form>
         )}
 
-        {/* Quick Demo Preset Logins */}
-        <div className="pt-4 border-t border-slate-200 space-y-2">
-          <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">
-            Quick Login Preset
-          </p>
-          <div>
-            <button
-              onClick={() => quickLogin('vanji.hr@rathinam.in', '123')}
-              className="w-full p-3.5 rounded-xl bg-sky-50/80 hover:bg-sky-100 border border-sky-200 text-left text-slate-800 flex items-center justify-between transition-colors"
-            >
-              <div>
-                <p className="font-bold text-sky-800">Vanji (Super Admin)</p>
-                <p className="text-[11px] text-slate-500">vanji.hr@rathinam.in (Pass: 123)</p>
-              </div>
-              <UserCheck className="w-5 h-5 text-sky-600" />
-            </button>
-          </div>
-        </div>
 
       </div>
     </div>
   );
 };
+

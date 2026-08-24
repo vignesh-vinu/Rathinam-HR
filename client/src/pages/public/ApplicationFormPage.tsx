@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { 
   User, Mail, Phone, MapPin, GraduationCap, Briefcase, Award, Languages, 
-  Users, FileText, CheckCircle2, ChevronRight, ChevronLeft, Plus, Trash2, 
-  Upload, AlertCircle, Save, Sparkles, Building, Calendar, HelpCircle, Check, Eye
+  Users, FileText, CheckCircle2, ChevronRight, ChevronLeft, Plus, Trash2, X, Edit,
+  Upload, AlertCircle, Save, Sparkles, Building, Calendar as CalendarIcon, HelpCircle, Check, Eye, Copy
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { OrganizationId, Application, EducationDetail, ExperienceDetail, LanguageKnown, FamilyDetail, ReferenceDetail, ReferredFriend, ApplicationDocument } from '../../types';
 import { api } from '../../services/api';
+import { CalendarDialogModal } from '../../components/CalendarDialogModal';
 
 interface ApplicationFormPageProps {
   organizationId: OrganizationId;
@@ -13,6 +15,22 @@ interface ApplicationFormPageProps {
 }
 
 const STORAGE_KEY = 'rathinam_hr_draft';
+
+const AVAILABLE_LANGUAGES = [
+  'English',
+  'Tamil',
+  'Hindi',
+  'Malayalam',
+  'Telugu',
+  'Kannada',
+  'French',
+  'German',
+  'Spanish',
+  'Sanskrit',
+  'Arabic',
+  'Japanese',
+  'Other'
+];
 
 export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organizationId, onNavigate }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -22,6 +40,79 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
   const [lastSavedTime, setLastSavedTime] = useState<string | null>(null);
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [pincodeAutoDetected, setPincodeAutoDetected] = useState<string | null>(null);
+
+  // Calendar Dialog Date Picker Modal State
+  const [datePickerModal, setDatePickerModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    initialDate?: string;
+    allowPresent?: boolean;
+    onSelectDate: (selectedDate: string) => void;
+  } | null>(null);
+
+  // Family Details Modal State & Handlers
+  const [showFamilyModal, setShowFamilyModal] = useState(false);
+  const [editingFamilyIndex, setEditingFamilyIndex] = useState<number | null>(null);
+  const [familyForm, setFamilyForm] = useState<FamilyDetail>({
+    id: '',
+    name: '',
+    age: '',
+    relationship: 'Father',
+    occupation: '',
+    dependent: 'Dependent',
+    contactNo: ''
+  });
+
+  const openAddFamilyModal = () => {
+    setFamilyForm({
+      id: `fam-${Date.now()}`,
+      name: '',
+      age: '',
+      relationship: 'Father',
+      occupation: '',
+      dependent: 'Dependent',
+      contactNo: ''
+    });
+    setEditingFamilyIndex(null);
+    setShowFamilyModal(true);
+  };
+
+  const openEditFamilyModal = (index: number) => {
+    const item = formData.familyDetails[index];
+    setFamilyForm({ ...item });
+    setEditingFamilyIndex(index);
+    setShowFamilyModal(true);
+  };
+
+  const saveFamilyMember = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!familyForm.name.trim()) {
+      alert('Please enter family member name.');
+      return;
+    }
+
+    setFormData(prev => {
+      const updated = [...(prev.familyDetails || [])];
+      if (editingFamilyIndex !== null) {
+        updated[editingFamilyIndex] = familyForm;
+      } else {
+        updated.push({
+          ...familyForm,
+          id: familyForm.id || `fam-${Date.now()}`
+        });
+      }
+      return { ...prev, familyDetails: updated };
+    });
+
+    setShowFamilyModal(false);
+  };
+
+  const removeFamilyMember = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      familyDetails: (prev.familyDetails || []).filter((_, i) => i !== index)
+    }));
+  };
 
   const handlePincodeChange = async (pinVal: string) => {
     setFormData(prev => ({
@@ -156,7 +247,8 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
     languagesKnown: [
       { language: 'English', read: true, write: true, speak: true, understand: true },
       { language: 'Tamil', read: true, write: true, speak: true, understand: true },
-      { language: 'Hindi', read: false, write: false, speak: false, understand: false }
+      { language: 'Hindi', read: false, write: false, speak: false, understand: false },
+      { language: 'Malayalam', read: false, write: false, speak: false, understand: false }
     ],
     familyDetails: [],
     additionalInfo: {
@@ -290,33 +382,57 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
     }
 
     setUploadingDoc(true);
-    try {
-      const res = await api.uploadFile(file, docType);
+
+    const processFileWithUrl = (url: string, sizeStr: string) => {
       const uploadedFile: ApplicationDocument = {
-        id: res.file.id,
-        name: res.file.name,
+        id: `doc-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        name: file.name,
         type: docType,
-        size: res.file.size,
-        url: res.file.url
+        size: sizeStr,
+        url: url
       };
 
       setFormData(prev => ({
         ...prev,
-        documents: [...(prev.documents || []), uploadedFile]
+        documents: [...(prev.documents || []).filter(d => d.type !== docType), uploadedFile]
       }));
 
       // If photo, update photoUrl
       if (docType === 'Photograph') {
         setFormData(prev => ({
           ...prev,
-          personalDetails: { ...prev.personalDetails!, photoUrl: res.file.url }
+          personalDetails: { ...prev.personalDetails!, photoUrl: url }
         }));
       }
-    } catch (err: any) {
-      alert(err.message || 'File upload failed');
-    } finally {
+    };
+
+    // Read via FileReader for instant client-side preview & reliable fallback
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      const dataUrl = evt.target?.result as string;
+      const sizeStr = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+
+      try {
+        const res = await api.uploadFile(file, docType);
+        if (res && res.file && res.file.url) {
+          processFileWithUrl(res.file.url, res.file.size || sizeStr);
+        } else {
+          processFileWithUrl(dataUrl, sizeStr);
+        }
+      } catch (uploadErr) {
+        console.warn('Backend upload API error, falling back to base64 data URL:', uploadErr);
+        processFileWithUrl(dataUrl, sizeStr);
+      } finally {
+        setUploadingDoc(false);
+      }
+    };
+
+    reader.onerror = () => {
+      alert('Failed to read file on device.');
       setUploadingDoc(false);
-    }
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const removeDocument = (docId: string) => {
@@ -373,9 +489,10 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const [submittedData, setSubmittedData] = useState<{ applicationId: string; application: any } | null>(null);
+
   // Final Form Submission Handler
   const handleFinalSubmit = async () => {
-    setShowConfirmModal(false);
     setLoading(true);
     setErrorMsg(null);
 
@@ -383,8 +500,14 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
     const p = (formData.personalDetails || {}) as any;
     const fullName = `${p.firstName || ''} ${p.middleName || ''} ${p.lastName || ''}`.replace(/\s+/g, ' ').trim().toUpperCase();
 
+    // Filter out languages where NO checkboxes (R, W, S, U) are ticked
+    const validLanguages = (formData.languagesKnown || []).filter(
+      l => l.language && (l.read || l.write || l.speak || l.understand)
+    );
+
     const payload = {
       ...formData,
+      languagesKnown: validLanguages,
       organizationId,
       personalDetails: { ...p, fullName }
     };
@@ -393,8 +516,17 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
       const res = await api.submitApplication(payload);
       // Clear draft
       localStorage.removeItem(STORAGE_KEY);
-      // Navigate to success screen
-      onNavigate('success', { applicationId: res.applicationId, application: res.application });
+      // Open Creative Success Popup Modal
+      setSubmittedData({ applicationId: res.applicationId, application: res.application || payload });
+      
+      // Trigger festive celebratory confetti animation
+      try {
+        confetti({
+          particleCount: 130,
+          spread: 85,
+          origin: { y: 0.55 }
+        });
+      } catch (e) {}
     } catch (err: any) {
       setErrorMsg(err.message || 'Submission failed. Please try again.');
     } finally {
@@ -607,21 +739,44 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Date of Birth <span className="text-rose-500">*</span>
                 </label>
-                <input
-                  type="date"
-                  value={formData.personalDetails?.dob || ''}
-                  onChange={e => {
-                    const dob = e.target.value;
-                    const birthYear = new Date(dob).getFullYear();
-                    const currentYear = new Date().getFullYear();
-                    const age = currentYear - birthYear;
-                    setFormData({
-                      ...formData,
-                      personalDetails: { ...formData.personalDetails!, dob, age }
-                    });
-                  }}
-                  className="w-full px-4 py-2.5 rounded-xl glass-input text-sm"
-                />
+                <div className="flex items-center space-x-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setDatePickerModal({
+                      isOpen: true,
+                      title: "Select Candidate Date of Birth",
+                      initialDate: formData.personalDetails?.dob,
+                      onSelectDate: (selectedDate) => {
+                        const birthYear = new Date(selectedDate).getFullYear();
+                        const currentYear = new Date().getFullYear();
+                        const age = isNaN(birthYear) ? undefined : (currentYear - birthYear);
+                        setFormData({
+                          ...formData,
+                          personalDetails: { ...formData.personalDetails!, dob: selectedDate, age }
+                        });
+                      }
+                    })}
+                    className="p-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition-all hover:scale-105 shadow-sm flex items-center justify-center"
+                    title="Open Date Picker Dialog"
+                  >
+                    <CalendarIcon className="w-4 h-4 text-sky-600" />
+                  </button>
+                  <input
+                    type="date"
+                    value={formData.personalDetails?.dob || ''}
+                    onChange={e => {
+                      const dob = e.target.value;
+                      const birthYear = new Date(dob).getFullYear();
+                      const currentYear = new Date().getFullYear();
+                      const age = currentYear - birthYear;
+                      setFormData({
+                        ...formData,
+                        personalDetails: { ...formData.personalDetails!, dob, age }
+                      });
+                    }}
+                    className="w-full px-4 py-2.5 rounded-xl glass-input text-sm"
+                  />
+                </div>
               </div>
 
               <div>
@@ -682,7 +837,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </label>
               <input
                 type="text"
-                value={formData.personalDetails?.nationality || 'Indian'}
+                value={formData.personalDetails?.nationality ?? ''}
                 onChange={e => setFormData({
                   ...formData,
                   personalDetails: { ...formData.personalDetails!, nationality: e.target.value }
@@ -744,7 +899,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                 </label>
                 <input
                   type="text"
-                  value={formData.contactDetails?.city || 'Coimbatore'}
+                  value={formData.contactDetails?.city ?? ''}
                   onChange={e => setFormData({
                     ...formData,
                     contactDetails: { ...formData.contactDetails!, city: e.target.value }
@@ -759,7 +914,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                 </label>
                 <input
                   type="text"
-                  value={formData.contactDetails?.state || 'Tamil Nadu'}
+                  value={formData.contactDetails?.state ?? ''}
                   onChange={e => setFormData({
                     ...formData,
                     contactDetails: { ...formData.contactDetails!, state: e.target.value }
@@ -1031,18 +1186,40 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
               <div>
                 <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                  Notice Period (Days)
+                  Notice Period
                 </label>
-                <input
-                  type="text"
-                  placeholder="e.g. 30 Days / Immediate"
-                  value={formData.financialDetails?.noticePeriod || '30 Days'}
-                  onChange={e => setFormData({
-                    ...formData,
-                    financialDetails: { ...formData.financialDetails!, noticePeriod: e.target.value }
-                  })}
-                  className="w-full px-3 py-2 rounded-lg glass-input text-xs"
-                />
+                <select
+                  value={['Immediate', '15 Days', '30 Days', '45 Days', '60 Days', '90 Days'].includes(formData.financialDetails?.noticePeriod || '30 Days') ? (formData.financialDetails?.noticePeriod || '30 Days') : 'Custom'}
+                  onChange={e => {
+                    const val = e.target.value;
+                    setFormData({
+                      ...formData,
+                      financialDetails: { ...formData.financialDetails!, noticePeriod: val === 'Custom' ? '' : val }
+                    });
+                  }}
+                  className="w-full px-3 py-2 rounded-lg glass-input text-xs font-bold text-slate-800 bg-white border border-sky-300 shadow-sm"
+                >
+                  <option value="Immediate" className="bg-white text-slate-900 font-semibold">Immediate / 1-7 Days</option>
+                  <option value="15 Days" className="bg-white text-slate-900 font-semibold">15 Days</option>
+                  <option value="30 Days" className="bg-white text-slate-900 font-semibold">30 Days (1 Month)</option>
+                  <option value="45 Days" className="bg-white text-slate-900 font-semibold">45 Days</option>
+                  <option value="60 Days" className="bg-white text-slate-900 font-semibold">60 Days (2 Months)</option>
+                  <option value="90 Days" className="bg-white text-slate-900 font-semibold">90 Days (3 Months)</option>
+                  <option value="Custom" className="bg-white text-slate-900 font-semibold">Custom / Specify</option>
+                </select>
+
+                {(!['Immediate', '15 Days', '30 Days', '45 Days', '60 Days', '90 Days'].includes(formData.financialDetails?.noticePeriod || '') || formData.financialDetails?.noticePeriod === '') && (
+                  <input
+                    type="text"
+                    placeholder="Specify notice period"
+                    value={formData.financialDetails?.noticePeriod || ''}
+                    onChange={e => setFormData({
+                      ...formData,
+                      financialDetails: { ...formData.financialDetails!, noticePeriod: e.target.value }
+                    })}
+                    className="w-full mt-1.5 px-3 py-1.5 rounded-lg glass-input text-xs font-bold border border-sky-200"
+                  />
+                )}
               </div>
 
               <div>
@@ -1138,33 +1315,90 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                       <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         From Date
                       </label>
-                      <input
-                        type="date"
-                        value={exp.periodFrom}
-                        onChange={e => {
-                          const updated = [...formData.experienceDetails!];
-                          updated[idx].periodFrom = e.target.value;
-                          setFormData({ ...formData, experienceDetails: updated });
-                        }}
-                        className="w-full px-3 py-2 rounded-lg glass-input text-xs"
-                      />
+                      <div className="flex items-center space-x-1">
+                        <button
+                          type="button"
+                          onClick={() => setDatePickerModal({
+                            isOpen: true,
+                            title: `Select 'From Date' (Work Entry #${idx + 1})`,
+                            initialDate: exp.periodFrom,
+                            onSelectDate: (selectedDate) => {
+                              const updated = [...formData.experienceDetails!];
+                              updated[idx].periodFrom = selectedDate;
+                              setFormData({ ...formData, experienceDetails: updated });
+                            }
+                          })}
+                          className="p-2 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition-all hover:scale-105 shadow-sm"
+                          title="Open Date Picker Dialog"
+                        >
+                          <CalendarIcon className="w-4 h-4 text-sky-600" />
+                        </button>
+                        <input
+                          type="date"
+                          value={exp.periodFrom}
+                          onChange={e => {
+                            const updated = [...formData.experienceDetails!];
+                            updated[idx].periodFrom = e.target.value;
+                            setFormData({ ...formData, experienceDetails: updated });
+                          }}
+                          className="w-full px-3 py-2 rounded-lg glass-input text-xs"
+                        />
+                      </div>
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         To Date (Or 'Present')
                       </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Present / YYYY-MM-DD"
-                        value={exp.periodTo}
-                        onChange={e => {
-                          const updated = [...formData.experienceDetails!];
-                          updated[idx].periodTo = e.target.value;
-                          setFormData({ ...formData, experienceDetails: updated });
-                        }}
-                        className="w-full px-3 py-2 rounded-lg glass-input text-xs"
-                      />
+                      <div className="flex items-center space-x-1">
+                        <button
+                          type="button"
+                          onClick={() => setDatePickerModal({
+                            isOpen: true,
+                            title: `Select 'To Date' (Work Entry #${idx + 1})`,
+                            initialDate: exp.periodTo,
+                            allowPresent: true,
+                            onSelectDate: (selectedDate) => {
+                              const updated = [...formData.experienceDetails!];
+                              updated[idx].periodTo = selectedDate;
+                              setFormData({ ...formData, experienceDetails: updated });
+                            }
+                          })}
+                          className="p-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition-all hover:scale-105 shadow-sm flex items-center justify-center"
+                          title="Open Date Picker Dialog"
+                        >
+                          <CalendarIcon className="w-4 h-4 text-sky-600" />
+                        </button>
+                        <input
+                          type="text"
+                          placeholder="YYYY-MM-DD or Present"
+                          value={exp.periodTo}
+                          onChange={e => {
+                            const updated = [...formData.experienceDetails!];
+                            updated[idx].periodTo = e.target.value;
+                            setFormData({ ...formData, experienceDetails: updated });
+                          }}
+                          className={`w-full px-3 py-2 rounded-xl glass-input text-xs font-semibold ${
+                            exp.periodTo === 'Present' ? 'text-emerald-700 bg-emerald-50/80 border-emerald-300 font-extrabold' : ''
+                          }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...formData.experienceDetails!];
+                            updated[idx].periodTo = exp.periodTo === 'Present' ? '' : 'Present';
+                            setFormData({ ...formData, experienceDetails: updated });
+                          }}
+                          className={`px-3 py-2 rounded-xl text-xs font-extrabold border transition-all whitespace-nowrap shadow-sm ${
+                            exp.periodTo === 'Present'
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-emerald-500/20'
+                              : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200'
+                          }`}
+                          title="Toggle 'Present' (Currently working here)"
+                        >
+                          {exp.periodTo === 'Present' ? '✓ Present' : 'Present'}
+                        </button>
+                      </div>
                     </div>
 
                     <div>
@@ -1230,80 +1464,197 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               />
             </div>
 
-            {/* Languages Known Grid */}
-            <div>
-              <h4 className="text-sm font-bold text-sky-700 mb-3 flex items-center space-x-2">
-                <Languages className="w-4 h-4" />
-                <span>Languages Known (Read, Write, Speak, Understand)</span>
-              </h4>
+            {/* Languages Known Grid (Choose Options) */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <h4 className="text-sm font-bold text-sky-800 flex items-center space-x-2">
+                    <Languages className="w-4 h-4 text-sky-600" />
+                    <span>Languages Known (Read, Write, Speak, Understand)</span>
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Select options for each language you are proficient in.
+                  </p>
+                </div>
 
-              <div className="overflow-x-auto rounded-xl border border-sky-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentLangs = formData.languagesKnown || [];
+                    setFormData({
+                      ...formData,
+                      languagesKnown: [
+                        ...currentLangs,
+                        { language: '', read: false, write: false, speak: false, understand: false }
+                      ]
+                    });
+                  }}
+                  className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-md shadow-sky-500/20 transition-all hover:scale-105"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>+ Add Other Language</span>
+                </button>
+              </div>
+
+              <div className="overflow-x-auto rounded-2xl border border-sky-200 shadow-sm bg-white">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-sky-100/70 border-b border-sky-200 text-sky-900 font-bold">
-                      <th className="py-2.5 px-3">S.No</th>
-                      <th className="py-2.5 px-3">Language</th>
-                      <th className="py-2.5 px-3 text-center">Read (R)</th>
-                      <th className="py-2.5 px-3 text-center">Write (W)</th>
-                      <th className="py-2.5 px-3 text-center">Speak (S)</th>
-                      <th className="py-2.5 px-3 text-center">Understand (U)</th>
+                    <tr className="bg-sky-100/80 border-b border-sky-200 text-sky-900 font-bold">
+                      <th className="py-3 px-4 w-12 text-center">S.No</th>
+                      <th className="py-3 px-4 min-w-[150px]">Language</th>
+                      <th className="py-3 px-4 text-center min-w-[90px]">Read (R)</th>
+                      <th className="py-3 px-4 text-center min-w-[90px]">Write (W)</th>
+                      <th className="py-3 px-4 text-center min-w-[90px]">Speak (S)</th>
+                      <th className="py-3 px-4 text-center min-w-[90px]">Understand (U)</th>
+                      <th className="py-3 px-4 text-center min-w-[120px]">Quick Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-sky-100">
-                    {(formData.languagesKnown || []).map((lang, idx) => (
-                      <tr key={idx} className="hover:bg-sky-50/60">
-                        <td className="py-2.5 px-3 text-slate-500 font-medium">{idx + 1}</td>
-                        <td className="py-2.5 px-3 font-semibold text-slate-800">{lang.language}</td>
-                        <td className="py-2.5 px-3 text-center">
-                          <input
-                            type="checkbox"
-                            checked={lang.read}
-                            onChange={e => {
-                              const updated = [...formData.languagesKnown!];
-                              updated[idx].read = e.target.checked;
-                              setFormData({ ...formData, languagesKnown: updated });
-                            }}
-                            className="w-4 h-4 accent-sky-600 rounded cursor-pointer"
-                          />
-                        </td>
-                        <td className="py-2.5 px-3 text-center">
-                          <input
-                            type="checkbox"
-                            checked={lang.write}
-                            onChange={e => {
-                              const updated = [...formData.languagesKnown!];
-                              updated[idx].write = e.target.checked;
-                              setFormData({ ...formData, languagesKnown: updated });
-                            }}
-                            className="w-4 h-4 accent-sky-600 rounded cursor-pointer"
-                          />
-                        </td>
-                        <td className="py-2.5 px-3 text-center">
-                          <input
-                            type="checkbox"
-                            checked={lang.speak}
-                            onChange={e => {
-                              const updated = [...formData.languagesKnown!];
-                              updated[idx].speak = e.target.checked;
-                              setFormData({ ...formData, languagesKnown: updated });
-                            }}
-                            className="w-4 h-4 accent-sky-600 rounded cursor-pointer"
-                          />
-                        </td>
-                        <td className="py-2.5 px-3 text-center">
-                          <input
-                            type="checkbox"
-                            checked={lang.understand}
-                            onChange={e => {
-                              const updated = [...formData.languagesKnown!];
-                              updated[idx].understand = e.target.checked;
-                              setFormData({ ...formData, languagesKnown: updated });
-                            }}
-                            className="w-4 h-4 accent-sky-600 rounded cursor-pointer"
-                          />
-                        </td>
-                      </tr>
-                    ))}
+                    {(formData.languagesKnown || []).map((lang, idx) => {
+                      const allChecked = lang.read && lang.write && lang.speak && lang.understand;
+                      const isStandard = AVAILABLE_LANGUAGES.filter(l => l !== 'Other').includes(lang.language);
+                      return (
+                        <tr key={idx} className="hover:bg-sky-50/70 transition-colors">
+                          <td className="py-3 px-4 text-center font-bold text-slate-500">{idx + 1}</td>
+                          
+                          <td className="py-3 px-4 font-bold text-slate-900 min-w-[180px]">
+                            <select
+                              value={isStandard ? lang.language : (lang.language ? 'Other' : '')}
+                              onChange={e => {
+                                const val = e.target.value;
+                                const updated = [...formData.languagesKnown!];
+                                if (val === 'Other') {
+                                  updated[idx].language = '';
+                                } else {
+                                  updated[idx].language = val;
+                                }
+                                setFormData({ ...formData, languagesKnown: updated });
+                              }}
+                              className="w-full px-3 py-1.5 rounded-xl glass-input text-xs font-extrabold text-slate-800 bg-white border border-sky-300 shadow-sm"
+                            >
+                              <option value="" className="text-slate-400">-- Choose Language --</option>
+                              {AVAILABLE_LANGUAGES.map(l => (
+                                <option key={l} value={l} className="bg-white text-slate-900 font-semibold">
+                                  {l}
+                                </option>
+                              ))}
+                            </select>
+
+                            {!isStandard && (
+                              <input
+                                type="text"
+                                placeholder="Type custom language..."
+                                value={lang.language}
+                                onChange={e => {
+                                  const updated = [...formData.languagesKnown!];
+                                  updated[idx].language = e.target.value;
+                                  setFormData({ ...formData, languagesKnown: updated });
+                                }}
+                                className="w-full mt-1.5 px-3 py-1 rounded-lg glass-input text-xs font-bold border border-sky-200"
+                              />
+                            )}
+                          </td>
+
+                          {/* READ (R) */}
+                          <td className="py-3 px-4 text-center">
+                            <input
+                              type="checkbox"
+                              checked={lang.read}
+                              onChange={e => {
+                                const updated = [...formData.languagesKnown!];
+                                updated[idx].read = e.target.checked;
+                                setFormData({ ...formData, languagesKnown: updated });
+                              }}
+                              className="w-5 h-5 accent-sky-600 rounded-md cursor-pointer border-2 border-sky-300 transition-transform hover:scale-110 shadow-sm"
+                            />
+                          </td>
+
+                          {/* WRITE (W) */}
+                          <td className="py-3 px-4 text-center">
+                            <input
+                              type="checkbox"
+                              checked={lang.write}
+                              onChange={e => {
+                                const updated = [...formData.languagesKnown!];
+                                updated[idx].write = e.target.checked;
+                                setFormData({ ...formData, languagesKnown: updated });
+                              }}
+                              className="w-5 h-5 accent-sky-600 rounded-md cursor-pointer border-2 border-sky-300 transition-transform hover:scale-110 shadow-sm"
+                            />
+                          </td>
+
+                          {/* SPEAK (S) */}
+                          <td className="py-3 px-4 text-center">
+                            <input
+                              type="checkbox"
+                              checked={lang.speak}
+                              onChange={e => {
+                                const updated = [...formData.languagesKnown!];
+                                updated[idx].speak = e.target.checked;
+                                setFormData({ ...formData, languagesKnown: updated });
+                              }}
+                              className="w-5 h-5 accent-sky-600 rounded-md cursor-pointer border-2 border-sky-300 transition-transform hover:scale-110 shadow-sm"
+                            />
+                          </td>
+
+                          {/* UNDERSTAND (U) */}
+                          <td className="py-3 px-4 text-center">
+                            <input
+                              type="checkbox"
+                              checked={lang.understand}
+                              onChange={e => {
+                                const updated = [...formData.languagesKnown!];
+                                updated[idx].understand = e.target.checked;
+                                setFormData({ ...formData, languagesKnown: updated });
+                              }}
+                              className="w-5 h-5 accent-sky-600 rounded-md cursor-pointer border-2 border-sky-300 transition-transform hover:scale-110 shadow-sm"
+                            />
+                          </td>
+
+                          {/* QUICK ACTIONS: SELECT ALL / REMOVE */}
+                          <td className="py-3 px-4 text-center">
+                            <div className="flex items-center justify-center space-x-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...formData.languagesKnown!];
+                                  const targetState = !allChecked;
+                                  updated[idx] = {
+                                    ...updated[idx],
+                                    read: targetState,
+                                    write: targetState,
+                                    speak: targetState,
+                                    understand: targetState
+                                  };
+                                  setFormData({ ...formData, languagesKnown: updated });
+                                }}
+                                className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all ${
+                                  allChecked
+                                    ? 'bg-sky-100 text-sky-700 border-sky-300'
+                                    : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-sky-50'
+                                }`}
+                              >
+                                {allChecked ? 'Uncheck All' : 'Check All'}
+                              </button>
+
+                              {(formData.languagesKnown || []).length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = (formData.languagesKnown || []).filter((_, i) => i !== idx);
+                                    setFormData({ ...formData, languagesKnown: updated });
+                                  }}
+                                  className="p-1 rounded-lg text-rose-500 hover:bg-rose-50 border border-rose-200 transition-colors"
+                                  title="Remove Row"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1312,18 +1663,114 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
           </div>
         )}
 
-        {/* STEP 6: REFERENCES & DECLARATIONS */}
+        {/* STEP 6: REFERENCES, FAMILY DETAILS & QUESTIONNAIRE */}
         {currentStep === 6 && (
-          <div className="space-y-6 animate-fadeIn">
+          <div className="space-y-8 animate-fadeIn">
             <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2 pb-3 border-b border-sky-100">
               <Users className="w-5 h-5 text-sky-600" />
-              <span>Step 6: References & Questionnaire</span>
+              <span>Step 6: Family Details, References & Questionnaire</span>
             </h3>
 
+            {/* FAMILY DETAILS GRID SECTION */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <h4 className="text-sm font-bold text-sky-800 flex items-center space-x-2">
+                    <Users className="w-4 h-4 text-sky-600" />
+                    <span>Family Details (Spouse / Parents / Children / Dependents)</span>
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Add family members to populate Page 2 of your Official Candidate Data Sheet.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={openAddFamilyModal}
+                  className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-md shadow-sky-500/20 transition-all hover:scale-105"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Family Member</span>
+                </button>
+              </div>
+
+              {/* Family Members Table */}
+              {(formData.familyDetails || []).length === 0 ? (
+                <div className="p-6 rounded-2xl bg-sky-50/50 border-dashed border-2 border-sky-300 text-center space-y-3">
+                  <User className="w-8 h-8 text-sky-500 mx-auto" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">No family details added yet</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Click the button below to open the Family Details dialog box.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={openAddFamilyModal}
+                    className="px-4 py-2 rounded-xl bg-white border border-sky-300 text-sky-700 text-xs font-bold hover:bg-sky-50 shadow-sm inline-flex items-center space-x-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Open Add Family Member Dialog</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="overflow-x-auto rounded-xl border border-sky-200 shadow-sm">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-sky-100/70 border-b border-sky-200 text-sky-900 font-bold">
+                        <th className="py-2.5 px-3">S.No</th>
+                        <th className="py-2.5 px-3">Full Name</th>
+                        <th className="py-2.5 px-3">Relationship</th>
+                        <th className="py-2.5 px-3 text-center">Age</th>
+                        <th className="py-2.5 px-3">Occupation</th>
+                        <th className="py-2.5 px-3 text-center">Status</th>
+                        <th className="py-2.5 px-3">Contact No</th>
+                        <th className="py-2.5 px-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-sky-100 bg-white">
+                      {(formData.familyDetails || []).map((fam, idx) => (
+                        <tr key={fam.id || idx} className="hover:bg-sky-50/60">
+                          <td className="py-2.5 px-3 font-semibold text-slate-500">{idx + 1}</td>
+                          <td className="py-2.5 px-3 font-bold text-slate-900">{fam.name}</td>
+                          <td className="py-2.5 px-3 font-semibold text-sky-700">{fam.relationship}</td>
+                          <td className="py-2.5 px-3 text-center font-mono">{fam.age || '-'}</td>
+                          <td className="py-2.5 px-3 text-slate-700">{fam.occupation || '-'}</td>
+                          <td className="py-2.5 px-3 text-center">
+                            <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full border ${
+                              fam.dependent === 'Dependent' || fam.dependent === 'Yes'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                : 'bg-slate-100 text-slate-600 border-slate-200'
+                            }`}>
+                              {fam.dependent || 'Not Dependent'}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 font-mono text-slate-700">{fam.contactNo || '-'}</td>
+                          <td className="py-2.5 px-3 text-right space-x-1">
+                            <button
+                              type="button"
+                              onClick={() => openEditFamilyModal(idx)}
+                              className="px-2 py-1 rounded bg-sky-50 text-sky-700 hover:bg-sky-100 text-[11px] font-bold border border-sky-200"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeFamilyMember(idx)}
+                              className="px-2 py-1 rounded bg-rose-50 text-rose-600 hover:bg-rose-100 text-[11px] font-bold border border-rose-200"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
             {/* Questions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-sky-50/70 border border-sky-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-5 rounded-2xl bg-sky-50/70 border border-sky-200 shadow-sm">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Are you willing to work on Sundays?
                 </label>
                 <select
@@ -1332,7 +1779,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                     ...formData,
                     additionalInfo: { ...formData.additionalInfo!, workSundays: e.target.value as any }
                   })}
-                  className="w-full px-3 py-2 rounded-lg glass-input text-xs"
+                  className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs font-bold text-slate-800 bg-white border border-sky-300 shadow-sm"
                 >
                   <option value="Yes" className="bg-white text-slate-900">Yes</option>
                   <option value="No" className="bg-white text-slate-900">No</option>
@@ -1340,19 +1787,41 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Joining Time Required
                 </label>
-                <input
-                  type="text"
-                  placeholder="e.g. 15 Days / Immediate"
-                  value={formData.additionalInfo?.joiningTimeRequired || '30 Days'}
-                  onChange={e => setFormData({
-                    ...formData,
-                    additionalInfo: { ...formData.additionalInfo!, joiningTimeRequired: e.target.value }
-                  })}
-                  className="w-full px-3 py-2 rounded-lg glass-input text-xs"
-                />
+                <select
+                  value={['Immediate', '15 Days', '30 Days', '45 Days', '60 Days', '90 Days'].includes(formData.additionalInfo?.joiningTimeRequired || '30 Days') ? (formData.additionalInfo?.joiningTimeRequired || '30 Days') : 'Custom'}
+                  onChange={e => {
+                    const val = e.target.value;
+                    setFormData({
+                      ...formData,
+                      additionalInfo: { ...formData.additionalInfo!, joiningTimeRequired: val === 'Custom' ? '' : val }
+                    });
+                  }}
+                  className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs font-bold text-slate-800 bg-white border border-sky-300 shadow-sm"
+                >
+                  <option value="Immediate" className="bg-white text-slate-900 font-semibold">Immediate / 1-7 Days</option>
+                  <option value="15 Days" className="bg-white text-slate-900 font-semibold">15 Days</option>
+                  <option value="30 Days" className="bg-white text-slate-900 font-semibold">30 Days (1 Month)</option>
+                  <option value="45 Days" className="bg-white text-slate-900 font-semibold">45 Days</option>
+                  <option value="60 Days" className="bg-white text-slate-900 font-semibold">60 Days (2 Months)</option>
+                  <option value="90 Days" className="bg-white text-slate-900 font-semibold">90 Days (3 Months)</option>
+                  <option value="Custom" className="bg-white text-slate-900 font-semibold">Custom / Specify</option>
+                </select>
+
+                {(!['Immediate', '15 Days', '30 Days', '45 Days', '60 Days', '90 Days'].includes(formData.additionalInfo?.joiningTimeRequired || '') || formData.additionalInfo?.joiningTimeRequired === '') && (
+                  <input
+                    type="text"
+                    placeholder="Specify joining time (e.g. 2 weeks)"
+                    value={formData.additionalInfo?.joiningTimeRequired || ''}
+                    onChange={e => setFormData({
+                      ...formData,
+                      additionalInfo: { ...formData.additionalInfo!, joiningTimeRequired: e.target.value }
+                    })}
+                    className="w-full mt-2 px-3.5 py-2 rounded-xl glass-input text-xs font-bold border border-sky-200"
+                  />
+                )}
               </div>
             </div>
 
@@ -1364,7 +1833,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
               <input
                 type="text"
                 placeholder="Type 'None' or details"
-                value={formData.additionalInfo?.litigationDetails || 'None'}
+                value={formData.additionalInfo?.litigationDetails ?? ''}
                 onChange={e => setFormData({
                   ...formData,
                   additionalInfo: { ...formData.additionalInfo!, litigationDetails: e.target.value }
@@ -1428,63 +1897,96 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
           <div className="space-y-6 animate-fadeIn">
             <h3 className="text-lg font-heading font-extrabold text-slate-900 flex items-center space-x-2 pb-3 border-b border-sky-100">
               <Upload className="w-5 h-5 text-sky-600" />
-              <span>Step 7: Upload Supporting Documents</span>
+              <span>Step 7: Upload Passport Size Photo & Resume / CV</span>
             </h3>
 
             <p className="text-xs text-slate-500">
-              Upload your Resume/CV, Photograph, and Educational Certificates (PDF / Image, Max 10MB).
+              Please upload your clear Passport Size Photograph (JPG, PNG) and your updated Resume / CV document (PDF, DOC, DOCX, Max 10MB each).
             </p>
 
-            {/* Upload Buttons Box */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Upload Boxes Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
-              {/* Resume Upload */}
-              <div className="p-4 rounded-xl bg-sky-50/50 text-center border-dashed border-2 border-sky-300 hover:border-sky-500 transition-colors shadow-sm">
-                <FileText className="w-8 h-8 text-sky-600 mx-auto mb-2" />
-                <p className="text-xs font-bold text-slate-800">Resume / CV</p>
-                <p className="text-[10px] text-slate-500 mb-3">PDF or DOCX</p>
-                <label className="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-bold text-xs cursor-pointer hover:bg-sky-500 inline-block shadow-sm">
-                  <span>Browse CV</span>
-                  <input
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    onChange={e => handleFileUpload(e, 'Resume')}
-                    className="hidden"
-                  />
-                </label>
+              {/* 1. Passport Size Photo Box */}
+              <div className="p-6 rounded-2xl bg-sky-50/70 text-center border-dashed border-2 border-sky-400 hover:border-sky-600 transition-colors shadow-sm flex flex-col justify-between">
+                <div>
+                  {formData.personalDetails?.photoUrl ? (
+                    <div className="mb-3">
+                      <img 
+                        src={formData.personalDetails.photoUrl} 
+                        alt="Uploaded Photo Preview" 
+                        className="w-24 h-28 object-cover rounded-xl border-2 border-sky-500 mx-auto shadow-md"
+                      />
+                      <p className="text-xs font-bold text-emerald-600 mt-2 flex items-center justify-center space-x-1">
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>Passport Photo Uploaded</span>
+                      </p>
+                    </div>
+                  ) : (
+                    <User className="w-12 h-12 text-sky-600 mx-auto mb-2" />
+                  )}
+                  
+                  <p className="text-sm font-bold text-slate-800">Passport Size Photo</p>
+                  <p className="text-xs text-slate-500 mb-4">JPG, PNG format (Max 10MB)</p>
+                </div>
+                
+                <div>
+                  <label className="px-5 py-2.5 rounded-xl bg-sky-600 text-white font-bold text-xs cursor-pointer hover:bg-sky-500 inline-flex items-center space-x-2 shadow-md shadow-sky-500/25 transition-all">
+                    <Upload className="w-4 h-4" />
+                    <span>{formData.personalDetails?.photoUrl ? 'Change Passport Photo' : 'Browse Passport Photo'}</span>
+                    <input
+                      type="file"
+                      accept="image/*,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png"
+                      onChange={e => handleFileUpload(e, 'Photograph')}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
               </div>
 
-              {/* Photo Upload */}
-              <div className="p-4 rounded-xl bg-sky-50/50 text-center border-dashed border-2 border-sky-300 hover:border-sky-500 transition-colors shadow-sm">
-                <User className="w-8 h-8 text-sky-600 mx-auto mb-2" />
-                <p className="text-xs font-bold text-slate-800">Passport Photo</p>
-                <p className="text-[10px] text-slate-500 mb-3">JPG or PNG</p>
-                <label className="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-bold text-xs cursor-pointer hover:bg-sky-500 inline-block shadow-sm">
-                  <span>Browse Photo</span>
-                  <input
-                    type="file"
-                    accept=".jpg,.jpeg,.png"
-                    onChange={e => handleFileUpload(e, 'Photograph')}
-                    className="hidden"
-                  />
-                </label>
-              </div>
+              {/* 2. Resume / CV Upload Box */}
+              {(() => {
+                const resumeDoc = (formData.documents || []).find(d => d.type === 'Resume');
+                return (
+                  <div className="p-6 rounded-2xl bg-sky-50/70 text-center border-dashed border-2 border-sky-400 hover:border-sky-600 transition-colors shadow-sm flex flex-col justify-between">
+                    <div>
+                      {resumeDoc ? (
+                        <div className="mb-3 space-y-2">
+                          <div className="w-14 h-16 rounded-xl bg-white border-2 border-emerald-400 mx-auto flex items-center justify-center shadow-md">
+                            <FileText className="w-8 h-8 text-emerald-600" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-slate-900 truncate max-w-[220px] mx-auto">{resumeDoc.name}</p>
+                            <p className="text-[10px] text-slate-500">{resumeDoc.size}</p>
+                          </div>
+                          <p className="text-xs font-bold text-emerald-600 flex items-center justify-center space-x-1">
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>Resume / CV Uploaded</span>
+                          </p>
+                        </div>
+                      ) : (
+                        <FileText className="w-12 h-12 text-sky-600 mx-auto mb-2" />
+                      )}
 
-              {/* Certificate Upload */}
-              <div className="p-4 rounded-xl bg-sky-50/50 text-center border-dashed border-2 border-sky-300 hover:border-sky-500 transition-colors shadow-sm">
-                <Award className="w-8 h-8 text-sky-600 mx-auto mb-2" />
-                <p className="text-xs font-bold text-slate-800">Certificate / ID Proof</p>
-                <p className="text-[10px] text-slate-500 mb-3">PDF or Image</p>
-                <label className="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-bold text-xs cursor-pointer hover:bg-sky-500 inline-block shadow-sm">
-                  <span>Browse Doc</span>
-                  <input
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={e => handleFileUpload(e, 'Certificate')}
-                    className="hidden"
-                  />
-                </label>
-              </div>
+                      <p className="text-sm font-bold text-slate-800">Resume / CV Document</p>
+                      <p className="text-xs text-slate-500 mb-4">PDF, DOC, DOCX format (Max 10MB)</p>
+                    </div>
+
+                    <div>
+                      <label className="px-5 py-2.5 rounded-xl bg-sky-600 text-white font-bold text-xs cursor-pointer hover:bg-sky-500 inline-flex items-center space-x-2 shadow-md shadow-sky-500/25 transition-all">
+                        <Upload className="w-4 h-4" />
+                        <span>{resumeDoc ? 'Change Resume / CV' : 'Browse Resume / CV'}</span>
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          onChange={e => handleFileUpload(e, 'Resume')}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                );
+              })()}
 
             </div>
 
@@ -1773,18 +2275,49 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-black">
-                      {(formData.languagesKnown || []).map((lang, idx) => (
-                        <tr key={idx}>
-                          <td className="border-r border-black p-1">{idx + 1}</td>
-                          <td className="border-r border-black p-1 font-semibold">{lang.language}</td>
-                          <td className="border-r border-black p-1 font-mono text-[10px]">
-                            {lang.read ? '☑' : '☐'} &nbsp; {lang.write ? '☑' : '☐'} &nbsp; {lang.speak ? '☑' : '☐'} &nbsp; {lang.understand ? '☑' : '☐'}
-                          </td>
-                          <td className="border-r border-black p-1">-</td>
-                          <td className="border-r border-black p-1">-</td>
-                          <td className="p-1 font-mono text-[10px]">-</td>
-                        </tr>
-                      ))}
+                      {(() => {
+                        const activeLangs = (formData.languagesKnown || []).filter(
+                          l => l.language && (l.read || l.write || l.speak || l.understand)
+                        );
+                        if (activeLangs.length === 0) {
+                          return (
+                            <tr>
+                              <td className="border-r border-black p-1 text-[10px] text-slate-500 font-semibold" colSpan={3}>None specified</td>
+                              <td className="p-1 text-[10px] text-slate-500 font-semibold" colSpan={3}>-</td>
+                            </tr>
+                          );
+                        }
+                        const rows = [];
+                        for (let i = 0; i < activeLangs.length; i += 2) {
+                          const left = activeLangs[i];
+                          const right = activeLangs[i + 1];
+                          rows.push(
+                            <tr key={i}>
+                              <td className="border-r border-black p-1 font-semibold">{i + 1}</td>
+                              <td className="border-r border-black p-1 font-bold">{left.language}</td>
+                              <td className="border-r border-black p-1 font-mono text-[10px]">
+                                {left.read ? '☑' : '☐'} &nbsp; {left.write ? '☑' : '☐'} &nbsp; {left.speak ? '☑' : '☐'} &nbsp; {left.understand ? '☑' : '☐'}
+                              </td>
+                              {right ? (
+                                <>
+                                  <td className="border-r border-black p-1 font-semibold">{i + 2}</td>
+                                  <td className="border-r border-black p-1 font-bold">{right.language}</td>
+                                  <td className="p-1 font-mono text-[10px]">
+                                    {right.read ? '☑' : '☐'} &nbsp; {right.write ? '☑' : '☐'} &nbsp; {right.speak ? '☑' : '☐'} &nbsp; {right.understand ? '☑' : '☐'}
+                                  </td>
+                                </>
+                              ) : (
+                                <>
+                                  <td className="border-r border-black p-1">-</td>
+                                  <td className="border-r border-black p-1">-</td>
+                                  <td className="p-1 font-mono text-[10px]">-</td>
+                                </>
+                              )}
+                            </tr>
+                          );
+                        }
+                        return rows;
+                      })()}
                     </tbody>
                   </table>
                 </div>
@@ -1886,10 +2419,9 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                     I hereby solemnly declare that all the details furnished above are true to the best of my knowledge
                   </p>
                   
-                  <div className="grid grid-cols-3 text-xs font-bold pt-4 text-center">
+                  <div className="grid grid-cols-2 text-xs font-bold pt-4 text-center max-w-md mx-auto">
                     <div>Date : <span className="font-normal underline">{new Date().toISOString().split('T')[0]}</span></div>
                     <div>Place : <span className="font-normal underline">Coimbatore</span></div>
-                    <div>Signature : <span className="font-normal italic">_________________</span></div>
                   </div>
                 </div>
 
@@ -1941,39 +2473,347 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
         )}
       </div>
 
-      {/* CONFIRMATION MODAL */}
-      {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fadeIn">
-          <div className="glass-panel p-6 sm:p-8 rounded-3xl max-w-md w-full border border-sky-300 space-y-4 text-center bg-white shadow-2xl">
-            <div className="w-14 h-14 rounded-full bg-sky-100 border border-sky-300 text-sky-600 flex items-center justify-center mx-auto">
-              <Sparkles className="w-7 h-7" />
-            </div>
+      {/* UNIFIED CONFIRMATION & SUBMITTED POPUP DIALOG MODAL */}
+      {(showConfirmModal || submittedData) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fadeIn overflow-y-auto">
+          <div className="glass-panel p-6 sm:p-9 rounded-3xl max-w-lg w-full border-2 border-sky-300 bg-white shadow-2xl space-y-6 text-center animate-scaleUp my-8 max-h-[90vh] overflow-y-auto">
+            
+            {/* STATE 1: LOADING STATE */}
+            {loading ? (
+              <div className="py-8 space-y-5">
+                <div className="w-20 h-20 rounded-full bg-sky-100 border-2 border-sky-400 text-sky-600 flex items-center justify-center mx-auto shadow-xl shadow-sky-500/20 animate-spin">
+                  <Sparkles className="w-10 h-10" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl sm:text-2xl font-heading font-extrabold text-slate-900">
+                    Submitting Application...
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 font-medium">
+                    Saving details into Rathinam HR Database & generating your Application ID...
+                  </p>
+                </div>
+                <div className="w-full bg-sky-100 h-2 rounded-full overflow-hidden max-w-xs mx-auto">
+                  <div className="bg-sky-600 h-full w-2/3 animate-pulse rounded-full" />
+                </div>
+              </div>
+            ) : submittedData ? (
+              /* STATE 2: SUBMITTED SUCCESS POPUP */
+              <>
+                {/* Celebratory Icon */}
+                <div className="relative pt-2">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 text-white flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/30 ring-8 ring-emerald-100 animate-pulse">
+                    <CheckCircle2 className="w-10 h-10" />
+                  </div>
+                  <span className="absolute top-0 right-1/4 text-2xl">✨</span>
+                  <span className="absolute bottom-0 left-1/4 text-2xl">🎉</span>
+                </div>
 
-            <h3 className="text-xl font-heading font-extrabold text-slate-900">
-              Submit Application to {organizationId}?
-            </h3>
+                {/* Badge & Title */}
+                <div className="space-y-2">
+                  <span className="px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-extrabold uppercase tracking-widest inline-block shadow-sm">
+                    🎉 APPLICATION SUBMITTED
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-slate-900 leading-tight">
+                    Application Submitted Successfully!
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-md mx-auto">
+                    Thank you, <strong className="text-slate-900">{formData.personalDetails?.firstName}</strong>! Your official employment application for <strong className="text-slate-900">{formData.positionApplied}</strong> has been logged into Rathinam HR database.
+                  </p>
+                </div>
 
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Are you sure you want to submit your application for <strong>{formData.positionApplied}</strong>? A unique Application ID will be generated immediately for tracking.
-            </p>
+                {/* Unique Application ID Card */}
+                <div className="p-5 rounded-2xl bg-gradient-to-br from-sky-50 via-white to-emerald-50 border border-sky-300 shadow-md space-y-3">
+                  <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-sky-800">
+                    <span>Unique Application Reference ID</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-mono">CONFIRMED</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between bg-white py-3 px-4 rounded-xl border border-sky-200 shadow-inner">
+                    <span className="font-mono text-xl sm:text-2xl font-extrabold tracking-wider text-slate-900 select-all">
+                      {submittedData.applicationId}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(submittedData.applicationId);
+                        alert(`Application ID ${submittedData.applicationId} copied to clipboard!`);
+                      }}
+                      className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center space-x-1 shadow-sm transition-all hover:scale-105"
+                      title="Copy Application ID"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy ID</span>
+                    </button>
+                  </div>
 
-            <div className="pt-4 flex items-center justify-center space-x-3">
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleFinalSubmit}
-                disabled={loading}
-                className="px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-extrabold shadow-lg shadow-sky-500/25"
-              >
-                {loading ? 'Submitting...' : 'Yes, Submit Application'}
-              </button>
-            </div>
+                  <p className="text-[11px] text-slate-500 font-medium text-left leading-normal">
+                    📌 Save or copy this Application ID to track recruitment status and interview schedules online.
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowConfirmModal(false);
+                      const id = submittedData.applicationId;
+                      setSubmittedData(null);
+                      onNavigate('track', { searchId: id });
+                    }}
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-sky-500/25 transition-all hover:scale-105"
+                  >
+                    <span>Track Application Status</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowConfirmModal(false);
+                      setSubmittedData(null);
+                      onNavigate('landing');
+                    }}
+                    className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 transition-colors"
+                  >
+                    Back to Home
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* STATE 3: PRE-SUBMISSION CONFIRMATION QUESTION */
+              <>
+                <div className="w-16 h-16 rounded-full bg-sky-100 border-2 border-sky-300 text-sky-600 flex items-center justify-center mx-auto shadow-md">
+                  <Sparkles className="w-8 h-8" />
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-heading font-extrabold text-slate-900">
+                  Submit Application to {organizationId}?
+                </h3>
+
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+                  Are you sure you want to submit your application for <strong>{formData.positionApplied}</strong>? A unique Application ID will be generated immediately for tracking.
+                </p>
+
+                {errorMsg && (
+                  <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-300 text-slate-800 text-xs space-y-2.5 text-left shadow-sm">
+                    <div className="flex items-center space-x-2 text-amber-800 font-extrabold">
+                      <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                      <span>{errorMsg.toLowerCase().includes('duplicate') ? 'Duplicate Application Detected' : 'Submission Alert'}</span>
+                    </div>
+                    <p className="text-slate-600 font-medium text-[11px] leading-relaxed">
+                      {errorMsg}
+                    </p>
+                    {errorMsg.toLowerCase().includes('duplicate') && (
+                      <div className="pt-1 flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowConfirmModal(false);
+                            onNavigate('track');
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold shadow-sm"
+                        >
+                          🔍 Track Existing Application
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowConfirmModal(false);
+                            setErrorMsg(null);
+                            setCurrentStep(2); // Go to Contact Details step to edit email/mobile
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-white border border-amber-300 text-amber-900 hover:bg-amber-100 text-[11px] font-bold"
+                        >
+                          ✏️ Edit Contact Details
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="pt-4 flex items-center justify-center space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowConfirmModal(false);
+                      setErrorMsg(null);
+                    }}
+                    className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleFinalSubmit}
+                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600 text-white text-xs font-extrabold shadow-lg shadow-sky-600/25 transition-all hover:scale-105"
+                  >
+                    Yes, Submit Application
+                  </button>
+                </div>
+              </>
+            )}
+
           </div>
         </div>
+      )}
+
+      {/* FAMILY DETAILS MODAL DIALOG BOX */}
+      {showFamilyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fadeIn">
+          <div className="glass-panel p-6 sm:p-8 rounded-3xl max-w-lg w-full border border-sky-300 space-y-5 bg-white shadow-2xl">
+            
+            <div className="flex items-center justify-between pb-3 border-b border-sky-100">
+              <div className="flex items-center space-x-2">
+                <div className="w-9 h-9 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center font-bold">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-heading font-extrabold text-slate-900">
+                    {editingFamilyIndex !== null ? 'Edit Family Member Details' : 'Add Family Member Details'}
+                  </h3>
+                  <p className="text-xs text-slate-500">Enter family info for Candidate Data Sheet</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowFamilyModal(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={saveFamilyMember} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Full Name <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Ramasamy / Priya"
+                  value={familyForm.name}
+                  onChange={e => setFamilyForm({ ...familyForm, name: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Relationship <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    value={familyForm.relationship}
+                    onChange={e => setFamilyForm({ ...familyForm, relationship: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl glass-input text-xs"
+                  >
+                    <option value="Father" className="bg-white">Father</option>
+                    <option value="Mother" className="bg-white">Mother</option>
+                    <option value="Spouse" className="bg-white">Spouse</option>
+                    <option value="Son" className="bg-white">Son</option>
+                    <option value="Daughter" className="bg-white">Daughter</option>
+                    <option value="Brother" className="bg-white">Brother</option>
+                    <option value="Sister" className="bg-white">Sister</option>
+                    <option value="Other" className="bg-white">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Age (Years)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="e.g. 52"
+                    value={familyForm.age}
+                    onChange={e => setFamilyForm({ ...familyForm, age: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Occupation
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Business / Service / Homemaker"
+                    value={familyForm.occupation}
+                    onChange={e => setFamilyForm({ ...familyForm, occupation: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Dependent Status
+                  </label>
+                  <select
+                    value={familyForm.dependent}
+                    onChange={e => setFamilyForm({ ...familyForm, dependent: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl glass-input text-xs"
+                  >
+                    <option value="Dependent" className="bg-white">Dependent</option>
+                    <option value="Not Dependent" className="bg-white">Not Dependent</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Contact Phone Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="e.g. 9876543210"
+                  value={familyForm.contactNo}
+                  onChange={e => setFamilyForm({ ...familyForm, contactNo: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs"
+                />
+              </div>
+
+              <div className="pt-3 flex items-center justify-end space-x-3 border-t border-sky-100">
+                <button
+                  type="button"
+                  onClick={() => setShowFamilyModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-md shadow-sky-500/25 flex items-center space-x-1.5"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>Save Family Member</span>
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+
+
+
+      {/* DATE PICKER CALENDAR DIALOG MODAL */}
+      {datePickerModal?.isOpen && (
+        <CalendarDialogModal
+          isOpen={true}
+          onClose={() => setDatePickerModal(null)}
+          title={datePickerModal.title}
+          initialDate={datePickerModal.initialDate}
+          allowPresent={datePickerModal.allowPresent}
+          mode="picker"
+          onSelectDate={(selectedDate) => {
+            datePickerModal.onSelectDate(selectedDate);
+            setDatePickerModal(null);
+          }}
+        />
       )}
 
     </div>
