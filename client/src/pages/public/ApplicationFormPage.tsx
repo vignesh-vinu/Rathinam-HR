@@ -1587,21 +1587,21 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                                 updated[idx].read = !updated[idx].read;
                                 setFormData({ ...formData, languagesKnown: updated });
                               }}
-                              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border shadow-sm inline-flex items-center justify-center space-x-1 ${
+                              className={`relative inline-flex items-center h-7 rounded-full w-16 transition-colors duration-200 ease-in-out focus:outline-none shadow-inner border ${
                                 lang.read
-                                  ? 'bg-sky-600 text-white border-sky-600 shadow-sky-500/25 scale-105'
-                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-500 border-slate-200'
+                                  ? 'bg-emerald-500 border-emerald-600'
+                                  : 'bg-slate-300 border-slate-400'
                               }`}
-                              title="Toggle Read (R)"
+                              title="Toggle Read (ON / OFF)"
                             >
-                              {lang.read ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5" />
-                                  <span>YES</span>
-                                </>
-                              ) : (
-                                <span>NO</span>
-                              )}
+                              <span
+                                className={`inline-block w-5 h-5 transform rounded-full bg-white transition duration-200 ease-in-out shadow-md ${
+                                  lang.read ? 'translate-x-9' : 'translate-x-1'
+                                }`}
+                              />
+                              <span className={`absolute text-[9px] font-black tracking-widest ${lang.read ? 'left-2 text-white' : 'right-2 text-slate-700'}`}>
+                                {lang.read ? 'ON' : 'OFF'}
+                              </span>
                             </button>
                           </td>
 
@@ -1614,21 +1614,21 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                                 updated[idx].write = !updated[idx].write;
                                 setFormData({ ...formData, languagesKnown: updated });
                               }}
-                              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border shadow-sm inline-flex items-center justify-center space-x-1 ${
+                              className={`relative inline-flex items-center h-7 rounded-full w-16 transition-colors duration-200 ease-in-out focus:outline-none shadow-inner border ${
                                 lang.write
-                                  ? 'bg-sky-600 text-white border-sky-600 shadow-sky-500/25 scale-105'
-                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-500 border-slate-200'
+                                  ? 'bg-emerald-500 border-emerald-600'
+                                  : 'bg-slate-300 border-slate-400'
                               }`}
-                              title="Toggle Write (W)"
+                              title="Toggle Write (ON / OFF)"
                             >
-                              {lang.write ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5" />
-                                  <span>YES</span>
-                                </>
-                              ) : (
-                                <span>NO</span>
-                              )}
+                              <span
+                                className={`inline-block w-5 h-5 transform rounded-full bg-white transition duration-200 ease-in-out shadow-md ${
+                                  lang.write ? 'translate-x-9' : 'translate-x-1'
+                                }`}
+                              />
+                              <span className={`absolute text-[9px] font-black tracking-widest ${lang.write ? 'left-2 text-white' : 'right-2 text-slate-700'}`}>
+                                {lang.write ? 'ON' : 'OFF'}
+                              </span>
                             </button>
                           </td>
 
@@ -1641,21 +1641,21 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                                 updated[idx].speak = !updated[idx].speak;
                                 setFormData({ ...formData, languagesKnown: updated });
                               }}
-                              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border shadow-sm inline-flex items-center justify-center space-x-1 ${
+                              className={`relative inline-flex items-center h-7 rounded-full w-16 transition-colors duration-200 ease-in-out focus:outline-none shadow-inner border ${
                                 lang.speak
-                                  ? 'bg-sky-600 text-white border-sky-600 shadow-sky-500/25 scale-105'
-                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-500 border-slate-200'
+                                  ? 'bg-emerald-500 border-emerald-600'
+                                  : 'bg-slate-300 border-slate-400'
                               }`}
-                              title="Toggle Speak (S)"
+                              title="Toggle Speak (ON / OFF)"
                             >
-                              {lang.speak ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5" />
-                                  <span>YES</span>
-                                </>
-                              ) : (
-                                <span>NO</span>
-                              )}
+                              <span
+                                className={`inline-block w-5 h-5 transform rounded-full bg-white transition duration-200 ease-in-out shadow-md ${
+                                  lang.speak ? 'translate-x-9' : 'translate-x-1'
+                                }`}
+                              />
+                              <span className={`absolute text-[9px] font-black tracking-widest ${lang.speak ? 'left-2 text-white' : 'right-2 text-slate-700'}`}>
+                                {lang.speak ? 'ON' : 'OFF'}
+                              </span>
                             </button>
                           </td>
 
@@ -1668,21 +1668,21 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                                 updated[idx].understand = !updated[idx].understand;
                                 setFormData({ ...formData, languagesKnown: updated });
                               }}
-                              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border shadow-sm inline-flex items-center justify-center space-x-1 ${
+                              className={`relative inline-flex items-center h-7 rounded-full w-16 transition-colors duration-200 ease-in-out focus:outline-none shadow-inner border ${
                                 lang.understand
-                                  ? 'bg-sky-600 text-white border-sky-600 shadow-sky-500/25 scale-105'
-                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-500 border-slate-200'
+                                  ? 'bg-emerald-500 border-emerald-600'
+                                  : 'bg-slate-300 border-slate-400'
                               }`}
-                              title="Toggle Understand (U)"
+                              title="Toggle Understand (ON / OFF)"
                             >
-                              {lang.understand ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5" />
-                                  <span>YES</span>
-                                </>
-                              ) : (
-                                <span>NO</span>
-                              )}
+                              <span
+                                className={`inline-block w-5 h-5 transform rounded-full bg-white transition duration-200 ease-in-out shadow-md ${
+                                  lang.understand ? 'translate-x-9' : 'translate-x-1'
+                                }`}
+                              />
+                              <span className={`absolute text-[9px] font-black tracking-widest ${lang.understand ? 'left-2 text-white' : 'right-2 text-slate-700'}`}>
+                                {lang.understand ? 'ON' : 'OFF'}
+                              </span>
                             </button>
                           </td>
 
