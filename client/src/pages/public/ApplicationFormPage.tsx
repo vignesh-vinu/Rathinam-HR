@@ -1580,58 +1580,110 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
                           {/* READ (R) */}
                           <td className="py-3 px-4 text-center">
-                            <input
-                              type="checkbox"
-                              checked={lang.read}
-                              onChange={e => {
+                            <button
+                              type="button"
+                              onClick={() => {
                                 const updated = [...formData.languagesKnown!];
-                                updated[idx].read = e.target.checked;
+                                updated[idx].read = !updated[idx].read;
                                 setFormData({ ...formData, languagesKnown: updated });
                               }}
-                              className="w-5 h-5 accent-sky-600 rounded-md cursor-pointer border-2 border-sky-300 transition-transform hover:scale-110 shadow-sm"
-                            />
+                              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border shadow-sm inline-flex items-center justify-center space-x-1 ${
+                                lang.read
+                                  ? 'bg-sky-600 text-white border-sky-600 shadow-sky-500/25 scale-105'
+                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-500 border-slate-200'
+                              }`}
+                              title="Toggle Read (R)"
+                            >
+                              {lang.read ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5" />
+                                  <span>YES</span>
+                                </>
+                              ) : (
+                                <span>NO</span>
+                              )}
+                            </button>
                           </td>
 
                           {/* WRITE (W) */}
                           <td className="py-3 px-4 text-center">
-                            <input
-                              type="checkbox"
-                              checked={lang.write}
-                              onChange={e => {
+                            <button
+                              type="button"
+                              onClick={() => {
                                 const updated = [...formData.languagesKnown!];
-                                updated[idx].write = e.target.checked;
+                                updated[idx].write = !updated[idx].write;
                                 setFormData({ ...formData, languagesKnown: updated });
                               }}
-                              className="w-5 h-5 accent-sky-600 rounded-md cursor-pointer border-2 border-sky-300 transition-transform hover:scale-110 shadow-sm"
-                            />
+                              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border shadow-sm inline-flex items-center justify-center space-x-1 ${
+                                lang.write
+                                  ? 'bg-sky-600 text-white border-sky-600 shadow-sky-500/25 scale-105'
+                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-500 border-slate-200'
+                              }`}
+                              title="Toggle Write (W)"
+                            >
+                              {lang.write ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5" />
+                                  <span>YES</span>
+                                </>
+                              ) : (
+                                <span>NO</span>
+                              )}
+                            </button>
                           </td>
 
                           {/* SPEAK (S) */}
                           <td className="py-3 px-4 text-center">
-                            <input
-                              type="checkbox"
-                              checked={lang.speak}
-                              onChange={e => {
+                            <button
+                              type="button"
+                              onClick={() => {
                                 const updated = [...formData.languagesKnown!];
-                                updated[idx].speak = e.target.checked;
+                                updated[idx].speak = !updated[idx].speak;
                                 setFormData({ ...formData, languagesKnown: updated });
                               }}
-                              className="w-5 h-5 accent-sky-600 rounded-md cursor-pointer border-2 border-sky-300 transition-transform hover:scale-110 shadow-sm"
-                            />
+                              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border shadow-sm inline-flex items-center justify-center space-x-1 ${
+                                lang.speak
+                                  ? 'bg-sky-600 text-white border-sky-600 shadow-sky-500/25 scale-105'
+                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-500 border-slate-200'
+                              }`}
+                              title="Toggle Speak (S)"
+                            >
+                              {lang.speak ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5" />
+                                  <span>YES</span>
+                                </>
+                              ) : (
+                                <span>NO</span>
+                              )}
+                            </button>
                           </td>
 
                           {/* UNDERSTAND (U) */}
                           <td className="py-3 px-4 text-center">
-                            <input
-                              type="checkbox"
-                              checked={lang.understand}
-                              onChange={e => {
+                            <button
+                              type="button"
+                              onClick={() => {
                                 const updated = [...formData.languagesKnown!];
-                                updated[idx].understand = e.target.checked;
+                                updated[idx].understand = !updated[idx].understand;
                                 setFormData({ ...formData, languagesKnown: updated });
                               }}
-                              className="w-5 h-5 accent-sky-600 rounded-md cursor-pointer border-2 border-sky-300 transition-transform hover:scale-110 shadow-sm"
-                            />
+                              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border shadow-sm inline-flex items-center justify-center space-x-1 ${
+                                lang.understand
+                                  ? 'bg-sky-600 text-white border-sky-600 shadow-sky-500/25 scale-105'
+                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-500 border-slate-200'
+                              }`}
+                              title="Toggle Understand (U)"
+                            >
+                              {lang.understand ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5" />
+                                  <span>YES</span>
+                                </>
+                              ) : (
+                                <span>NO</span>
+                              )}
+                            </button>
                           </td>
 
                           {/* QUICK ACTIONS: SELECT ALL / REMOVE */}
