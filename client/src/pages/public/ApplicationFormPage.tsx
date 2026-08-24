@@ -246,9 +246,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
     certifications: '',
     languagesKnown: [
       { language: 'English', read: true, write: true, speak: true, understand: true },
-      { language: 'Tamil', read: true, write: true, speak: true, understand: true },
-      { language: 'Hindi', read: false, write: false, speak: false, understand: false },
-      { language: 'Malayalam', read: false, write: false, speak: false, understand: false }
+      { language: 'Tamil', read: true, write: true, speak: true, understand: true }
     ],
     familyDetails: [],
     additionalInfo: {
@@ -278,7 +276,20 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
       try {
         const parsed = JSON.parse(savedDraft);
         if (parsed.formData) {
-          setFormData(prev => ({ ...prev, ...parsed.formData, organizationId }));
+          // Filter out any unticked language rows from restored draft
+          const restoredLangs = (parsed.formData.languagesKnown || []).filter(
+            (l: any) => l.language && (l.read || l.write || l.speak || l.understand)
+          );
+          const cleanLangs = restoredLangs.length > 0 ? restoredLangs : [
+            { language: 'English', read: true, write: true, speak: true, understand: true },
+            { language: 'Tamil', read: true, write: true, speak: true, understand: true }
+          ];
+          setFormData(prev => ({
+            ...prev,
+            ...parsed.formData,
+            languagesKnown: cleanLangs,
+            organizationId
+          }));
           setLastSavedTime(parsed.savedAt);
         }
       } catch (e) {
@@ -478,6 +489,18 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
 
   const handleNextStep = () => {
     if (validateCurrentStep()) {
+      // Strip out unticked languages when leaving Step 5
+      if (currentStep === 5) {
+        const activeLangs = (formData.languagesKnown || []).filter(
+          l => l.language && (l.read || l.write || l.speak || l.understand)
+        );
+        setFormData(prev => ({
+          ...prev,
+          languagesKnown: activeLangs.length > 0 ? activeLangs : [
+            { language: 'English', read: true, write: true, speak: true, understand: true }
+          ]
+        }));
+      }
       saveDraft();
       setCurrentStep(prev => Math.min(8, prev + 1));
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1485,7 +1508,7 @@ export const ApplicationFormPage: React.FC<ApplicationFormPageProps> = ({ organi
                       ...formData,
                       languagesKnown: [
                         ...currentLangs,
-                        { language: '', read: false, write: false, speak: false, understand: false }
+                        { language: '', read: true, write: true, speak: true, understand: true }
                       ]
                     });
                   }}
